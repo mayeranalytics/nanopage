@@ -1,0 +1,61 @@
+name:                nanopage
+version:             0.1.0.0
+synopsis:            nanoPage is a minimal flat file CMS based on the Spock framework.
+-- description:
+homepage:            https://github.com/githubuser/nanopage#readme
+license:             MIT
+license-file:        LICENSE
+author:              Markus Mayer
+maintainer:          mmayer@mayeranalytics.com
+copyright:           Mayer Analytics
+category:            Web
+build-type:          Simple
+extra-source-files:  README.md
+cabal-version:       >=1.10
+
+executable nanopage
+    hs-source-dirs:    src, src/Partials
+    main-is:           Main.hs
+    default-language:  Haskell2010
+    ghc-options:       -O2 -j -threaded
+    build-depends:     base >= 4.7 && < 5
+                     , Spock >= 0.12
+                     , text
+                     , bytestring
+                     , blaze-html
+                     , blaze-markup
+                     , http-types
+                     , network-uri
+                     , mime-types
+                     , wai-extra
+                     , wai-middleware-static
+                     , stache
+                     , parsec
+                     , aeson
+                     , hxt
+                     , yaml
+                     , pandoc
+                     , filepath
+                     , slug
+                     , file-embed
+                     , containers
+                     , time
+                     , iso8601-time
+                     , xml-conduit
+                     , string-qq
+                     , optparse-applicative
+                     , directory
+    other-modules:   Partials.TagList
+                     , Partials.KeywordList
+                     , Partials.TagList
+                     , Partials.CategoryList
+                     , Partials.AdminBlock
+                     , Partials.TagCloud
+                     , Page
+                     , FileDB
+                     , Sitemap
+                     , Internal.FileDB
+                     , Internal.Helpers
+                     , Internal.HtmlOps
+                     , Internal.SpockExt
+                     , Internal.Partial

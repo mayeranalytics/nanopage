@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en" data-pgc-master="pg-template.html">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="{{description}}">
+        <meta name="author" content="{{author}}">
+        <meta name="keywords" content="{{keywords}}">
+        <!-- Favicons-->
+        <link rel="apple-touch-icon-precomposed" href="/assets/img/apple-touch-icon-152x152.png">
+        <meta name="msapplication-TileColor" content="#FFFFFF">
+        <meta name="msapplication-TileImage" content="/assets/img/mstile-144x144.png">
+        <link rel="icon" href="/assets/img/favicon-32x32.png" sizes="32x32">
+        <title>{{title}}</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <!-- Materialize core CSS -->
+        <link href="/assets/materialize/css/materialize.css" rel="stylesheet">
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="/assets/js/html5shiv.js"></script>
+            <script src="/assets/js/respond.min.js"></script>
+        <![endif]-->
+        <link href="/style.css" rel="stylesheet">
+    </head>
+    <body>
+        <nav> 
+            <div class="nav-wrapper nav"> 
+                <a href="/" class="brand-logo">
+                    <img src="/assets/img/logo.svg">
+                </a>                 
+                <a href="#" data-activates="nav-mobile" class="button-collapse top-nav waves-effect waves-light circle hide-on-large-only"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down"> 
+                    <li>
+                        <a href="#">Sass</a>
+                    </li>                     
+                    <li>
+                        <a href="#">Components</a>
+                    </li>                     
+                    <li> 
+                        <a class="dropdown-button" href="#!" data-activates="dropdown1">                                    Dropdown<i class="material-icons right">arrow_drop_down</i> </a> 
+                        <ul id="dropdown1" class="dropdown-content"> 
+                            <li>
+                                <a href="#!">one</a>
+                            </li>                             
+                            <li>
+                                <a href="#!">two</a>
+                            </li>                             
+                            <li class="divider"></li>                             
+                            <li>
+                                <a href="#!">three</a>
+                            </li>                             
+                        </ul>                         
+                    </li>                     
+                </ul>
+                <ul id="nav-mobile" class="side-nav fixed hide-on-large-only" style="transform: translateX(-100%);">
+                    <li class="logo">
+                        <a id="logo-container" href="http://materializecss.com/" class="brand-logo">
+                            <object id="front-page-logo" type="image/svg+xml" data="res/materialize.svg">Your browser does not support SVG</object>
+                        </a>
+                    </li>
+                    <li class="bold">
+                        <a href="about.html" class="waves-effect waves-teal">About</a>
+                    </li>
+                    <li class="bold">
+                        <a href="getting-started.html" class="waves-effect waves-teal">Getting Started</a>
+                    </li>
+                    <li class="no-padding">
+                        <ul class="collapsible collapsible-accordion">
+                            <li class="bold">
+                                <a class="collapsible-header  waves-effect waves-teal">CSS</a>
+                                <div class="collapsible-body">
+                                    <ul>
+                                        <li>
+                                            <a href="color.html">Color</a>
+                                        </li>
+                                        <li>
+                                            <a href="grid.html">Grid</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="bold">
+                        <a href="http://materializecss.com/mobile.html" class="waves-effect waves-teal">Mobile</a>
+                    </li>
+                    <li class="bold">
+                        <a href="showcase.html" class="waves-effect waves-teal">Showcase</a>
+                    </li>
+                    <li class="bold">
+                        <a href="themes.html" class="waves-effect waves-teal">Themes<span class="new badge"></span></a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <div class="container" data-pgc-field="content">
+            <h1>{{title}}</h1>
+            <p id="taglist">{{{taglist}}}</p>
+            <div id="content">
+                {{{content}}}
+</div>
+        </div>
+        <footer class="page-footer footer"> 
+            <div class="container"> 
+                <div class="row"> 
+                    <div class="col l6 s12"> 
+                        <h5 class="white-text">Footer Content</h5> 
+                        <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content.</p> 
+                    </div>                     
+                    <div class="col l4 offset-l2 s12"> 
+                        <h5 class="white-text">Links</h5> 
+                        <ul> 
+                            <li>
+                                <a class="grey-text text-lighten-3" href="#!">Link 1</a>
+                            </li>                             
+                            <li>
+                                <a class="grey-text text-lighten-3" href="#!">Link 2</a>
+                            </li>                             
+                            <li>
+                                <a class="grey-text text-lighten-3" href="#!">Link 3</a>
+                            </li>                             
+                            <li>
+                                <a class="grey-text text-lighten-3" href="#!">Link 4</a>
+                            </li>                             
+                        </ul>                         
+                    </div>                     
+                </div>                 
+            </div>
+            <div class="fixed-action-btn">
+                <a class="btn-floating btn-large red"><i class="large material-icons">question_answer</i></a>
+                <ul>
+                    <li>
+                        <a class="btn-floating red" href="https://github.com/mayeranalytics/nanoPage"><i class="fa fa-github"></i></a>
+                    </li>
+                    <li>
+                        <a class="btn-floating red" href="https://twitter.com/mayeranalytics"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li>
+                        <a class="btn-floating red" href="https://www.facebook.com/mayeranalytics"><i class="fa fa-facebook"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="footer-copyright"> 
+                <div class="container">© 2017 Copyright Text                            
+                    <a class="grey-text text-lighten-4 right" href="#!">More Links</a> 
+                </div>                 
+            </div>             
+        </footer>
+        <!-- Materialize core JavaScript -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="/assets/js/jquery.min.js"></script>
+        <script src="/assets/materialize/js/materialize.js"></script>
+        <script src="assets/highlight/highlight.pack.js"></script>
+        <script src="/assets/js/masonry.pkgd.min.js"></script>
+        <link rel="stylesheet" href="/assets/highlight/styles/foundation.css">
+        <link rel="stylesheet" href="/assets/font-awesome/css/font-awesome.min.css">
+        <script>$(document).ready(function(){ $(".button-collapse").sideNav(); hljs.initHighlightingOnLoad();});</script>
+    </body>
+</html>
