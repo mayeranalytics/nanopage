@@ -143,6 +143,7 @@ class Partial a where
     partial     :: a -> FileDB -> Page -> Params -> H.Html
 ```
 
-## SEO
+## Resources
 
-[Google](https://support.google.com/webmasters/answer/79812?hl=en)
+- [Google on SEO](https://support.google.com/webmasters/answer/79812?hl=en)
+- [Favicon checker](https://realfavicongenerator.net/favicon_checker)
