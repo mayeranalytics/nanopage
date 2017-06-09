@@ -15,7 +15,10 @@ bin/nanopage:
 ghcid:
 	make -C app ghcid
 
+compress:
+	upx -9 bin/nanopage
+
 clean:
 	make -C app clean
 
-.PHONY: clean run admin
+.PHONY: clean run admin compress
