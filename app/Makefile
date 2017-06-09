@@ -1,6 +1,6 @@
 all: ../bin/nanopage
 
-../bin/nanopage: src/*.hs src/Internal/*.hs src/Partials/*.hs
+../bin/nanopage:
 	stack --local-bin-path ../bin install
 
 ghcid:
@@ -12,4 +12,4 @@ atom:
 clean:
 	rm -f ../bin/nanopage; stack clean
 
-.PHONY: atom build clean ghcid
+.PHONY: atom build clean ghcid ../bin/nanopage

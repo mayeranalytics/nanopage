@@ -21,4 +21,4 @@ compress:
 clean:
 	make -C app clean
 
-.PHONY: clean run admin compress
+.PHONY: clean run admin compress bin/nanopage
