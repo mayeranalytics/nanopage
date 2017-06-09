@@ -32,8 +32,7 @@ import qualified Web.Spock.Config                     as Sp
 import           FileDB                               (FileDB, Mode (..),
                                                        defaultFileDB,
                                                        getStaticDirRoutes,
-                                                       isHiddenPage, makePages,
-                                                       setFileDBMode)
+                                                       isHiddenPage, makePages)
 import qualified FileDB
 import qualified Internal.Partial                     as Partial
 import           Page                                 (renderPage,
@@ -124,7 +123,7 @@ appMiddleware o = do
 
 spockConfig :: Opts -> IO (Sp.SpockCfg FileDB () ())
 spockConfig opts = do
-    let fileDb = setFileDBMode (mode opts) defaultFileDB
+    let fileDb = defaultFileDB { FileDB.mode = mode opts }
     sessionCfg <- Sp.defaultSessionCfg ()
     let conn = Sp.PCConn Sp.ConnBuilder {
         Sp.cb_createConn = return fileDb ,

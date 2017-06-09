@@ -3,7 +3,7 @@
 module FileDB (FileDB(..), Page(..), Mode(..), TemplateName, Params, listPages,
     makePage, makePreview, getPagesNoContent, makePages, getStaticDirRoutes,
     defaultFileDB, getTemplate, title, slug, tags, keywords, categories,
-    description, author, setFileDBMode, makeContent, isHiddenPage, PageInfo, mkPageInfo, renderPreviewWith
+    description, author, makeContent, isHiddenPage, PageInfo, mkPageInfo, renderPreviewWith
 ) where
 
 import qualified Control.Exception                    as Exception
