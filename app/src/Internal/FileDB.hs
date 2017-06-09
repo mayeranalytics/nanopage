@@ -54,10 +54,10 @@ data FileDB = FileDB {
     mode         :: Mode
 }
 
--- |Mode can be PROD or ADMIN, representing deployment environments.
+-- | Mode can be PROD or ADMIN, representing deployment environments.
 data Mode = PROD | ADMIN deriving (Read, Show, Eq)
 
--- |Return a FileDB record with default parameters
+-- | Return a FileDB record with default parameters
 defaultFileDB :: FileDB
 defaultFileDB = FileDB {
         pagesDir = "pages",
@@ -66,6 +66,8 @@ defaultFileDB = FileDB {
         mode = PROD
     }
 
+-- | Embed all required files. Note that the paths are hardcoded relative paths
+-- which has strong implications on project file structure.
 embedAllFiles :: [(FilePath, BS.ByteString)]
 embedAllFiles = prefixWith "pages" pages
     ++ prefixWith "templates" templates
@@ -76,20 +78,11 @@ embedAllFiles = prefixWith "pages" pages
     templates = $(embedDir "../content/templates")
     static = $(embedDir "../content/static")
 
--- |Return a FileDB record with modified mode.
-setFileDBMode :: Mode -> FileDB -> FileDB
-setFileDBMode m db = FileDB {
-        pagesDir = pagesDir db,
-        templatesDir = templatesDir db,
-        files = files db,
-        mode = m
-    }
-
--- |Normalize a directory name, i.e. replace double // by / etc.
+-- | Normalize a directory name, i.e. replace double // by / etc.
 normalizePath :: FilePath -> FilePath
 normalizePath = joinPath . splitDirectories
 
--- |In files of FileDB find filenames with extension ext under dir
+-- | In files of FileDB find filenames with extension ext under dir
 findFiles :: FileDB -> String -> FilePath -> [FilePath]
 findFiles db ext dir = filter f ps where
     ps = fst <$> files db
@@ -98,7 +91,7 @@ findFiles db ext dir = filter f ps where
         (dir', file) = splitFileName p
         ext' = (snd.splitExtension) file
 
--- |In files of FileDB find filenames with extension ext under dir
+-- | In files of FileDB find filenames with extension ext under dir
 readFile :: FileDB -> FilePath -> BS.ByteString
 readFile db p = case e_c of
     Nothing    -> error (p ++ " could not be found")
@@ -107,8 +100,8 @@ readFile db p = case e_c of
         n = normalizePath
         e_c = find (\(p',_)->n p == n p') (files db)
 
--- |Test whether p1 is subdir of p2. The arguments are arranged such that
--- |p1 `isSubDir` p2 tests naturally
+-- | Test whether p1 is subdir of p2. The arguments are arranged such that
+-- p1 `isSubDir` p2 tests naturally
 isSubDir :: [FilePath] -> [FilePath] -> Bool
 isSubDir p1 p2
     | l2 > l1 = False
@@ -118,18 +111,18 @@ isSubDir p1 p2
         l1 = length p1
         l2 = length p2
 
--- |In files of FileDB find all the directories underneath the given path.
--- |Full paths are returned.
+-- | In files of FileDB find all the directories underneath the given path.
+-- Full paths are returned.
 getDirectories :: FileDB -> FilePath -> [FilePath]
 getDirectories db = getDirectories' (map fst $ files db)
 
 -- |Helper function that returns the unique elements in a list. Not efficient,
--- |but ok for small lists.
+-- but ok for small lists.
 unique :: Eq a => [a] -> [a]
 unique = reverse . nub . reverse
 
--- |In list of paths find all the directories underneath the given path
--- |(This is a helper function for getDirectories.)
+-- | In list of paths find all the directories underneath the given path
+-- (This is a helper function for getDirectories.)
 getDirectories' :: [FilePath] -> FilePath -> [FilePath]
 getDirectories' ps p' = map joinPath $ filter (`isSubDir` p) dirs where
     dirs = unique $ filter (not.null) $ map (init.splitDirectories) ps
@@ -138,7 +131,7 @@ getDirectories' ps p' = map joinPath $ filter (`isSubDir` p) dirs where
 
 {------------------------------ Template --------------------------------------}
 
--- |Load, compile and return the template with the given name.
+-- | Load, compile and return the template with the given name.
 getTemplate :: TemplateName -> FileDB -> M.Template
 getTemplate tname db = case e_m of
         Left err -> error "getTemplate: compileMustacheText error"
@@ -216,14 +209,14 @@ data Page = Page {
     template     :: Maybe M.Template   -- parsed content of the template file
 }
 
--- |Parameters passed to partials
+-- | Parameters passed to partials
 type Params = [(T.Text, T.Text)]
 
--- |Return the title of a page.
+-- | Return the title of a page.
 title :: Page -> TL.Text
 title p = _title (config p)
 
--- |Return the slug of a page.
+-- | Return the slug of a page.
 slug :: Page -> TL.Text
 slug p = case _slug (config p) of
     Just s  -> s
@@ -231,32 +224,32 @@ slug p = case _slug (config p) of
         Just s' -> s'
         Nothing -> error "Cannot create slug!"
 
--- |Return the list of keywords of a page.
+-- | Return the list of keywords of a page.
 keywords :: Page -> [TL.Text]
 keywords p = fromMaybe [] (_keywords $ config p)
 
--- |Return the list of tags of a page.
+-- | Return the list of tags of a page.
 tags :: Page -> [TL.Text]
 tags p = fromMaybe [] (_tags $ config p)
 
--- |Return the list of categories of a page.
+-- | Return the list of categories of a page.
 categories :: Page -> [TL.Text]
 categories p = fromMaybe [] (_categories $ config p)
 
--- |Return the description of a page.
+-- | Return the description of a page.
 description :: Page -> TL.Text
 description = descriptionString . config
 
--- |Return the author name of a page.
+-- | Return the author name of a page.
 author :: Page -> TL.Text
 author = authorString . config
 
--- |Returns True when the page is a hidden page (has a slug beginning with '_' or '.')
+-- | Returns True when the page is a hidden page (has a slug beginning with '_' or '.')
 isHiddenPage :: Page -> Bool
 isHiddenPage p = h == '_' || h == '.' where
     h = TL.head $ tr' "slug" $ slug p
 
--- |Get the page identified by pageDir from FileDB.
+-- | Get the page identified by pageDir from FileDB.
 getPageNoContent :: FilePath -> FileDB -> Page
 getPageNoContent pageDir db = p where
     l = length mdFiles
@@ -266,13 +259,13 @@ getPageNoContent pageDir db = p where
       | l > 1  = error $ "There are multiple .md files in " ++ pageDir
       | otherwise = Page { config = cfg, mdContent = "", mdPreview = "", template = Nothing, previewImage = "assets/img/placeholder-320x160.png" }
 
--- |Return a list of all available pages
+-- | Return a list of all available pages
 getAllPagesNoContent :: FileDB -> [Page]
 getAllPagesNoContent db = map (`getPageNoContent` db) ps where
     ps = listPages db
 
--- |Return a list of all visible pages, i.e. all pages that don't have a leading
--- |'.' or '_'
+-- | Return a list of all visible pages, i.e. all pages that don't have a leading
+-- '.' or '_'
 getPagesNoContent :: FileDB -> [Page]
 getPagesNoContent db = filter f (getAllPagesNoContent db) where
   isAdmin = mode db == ADMIN
@@ -283,19 +276,21 @@ listPages :: FileDB -> [String]
 listPages db = filter (('.'/=).head) dirs where
    dirs = getDirectories db (pagesDir db)
 
--- |Splits a file content into preview and content. It splits on the first
---  occurence of "---"
-splitPreviewContent :: BS8.ByteString -> (BS8.ByteString, BS8.ByteString)
-splitPreviewContent bs = (p, c) where
+-- | Splits a file content into preview and content. It splits on the first
+-- occurence of "---"
+splitPagePreviewContent :: BS8.ByteString -> (BS8.ByteString, BS8.ByteString)
+splitPagePreviewContent bs = (p, c) where
    brk = "---" :: BS8.ByteString
    (p', c') = BS8.breakSubstring brk bs
    (p,c) | c' == "" = ("", p')
          | otherwise = (p', BS8.drop 3 c')
 
--- |Get the page identified by pageDir from FileDB.
-makePage :: String -> FileDB -> IO Page
+-- | Create the page identified by @pageDir@ from FileDB @db@.
+makePage :: FilePath -> FileDB -> IO Page
 makePage pageDir db = do
-    let relativePageDir = makeRelative (pagesDir db) pageDir
+    -- 0. in ADMIN mode chop the "pages/" in pageDir (TODO: standardize this)
+    let relativePageDir | mode db == ADMIN = makeRelative (pagesDir db) pageDir
+                        | otherwise        = pageDir
     -- 1. Get a list of mdfiles in pageDirFullPath, raise an error if there is not exactly one
     let mdFiles = Internal.FileDB.findFiles db ".md" pageDir
     when (null mdFiles) (error $ "No .md files found in " ++ pageDir)
@@ -306,7 +301,7 @@ makePage pageDir db = do
     let template = getTemplate templateFileName db
     -- 3. read the mdfile, render the markdown to HTML, transform the HTML (fix paths, etc.)
     let mdFileContent = Internal.FileDB.readFile db $ joinPath [pageDir, mdFileName]
-    let (mdPreview, mdContent) = splitPreviewContent mdFileContent
+    let (mdPreview, mdContent) = splitPagePreviewContent mdFileContent
     let htmlContent' = markdownToHtmlString mdContent
     let htmlPreview' = markdownToHtmlString mdPreview
     htmlContent <- transformHtml relativePageDir htmlContent'
@@ -323,7 +318,7 @@ makePage pageDir db = do
         previewImage = previewImage
     }
 
--- |'Safe' version of makePage that catches IOErrors and returns error messages in an Either.
+-- | 'Safe' version of makePage that catches IOErrors and returns error messages in an Either.
 makePage' :: String -> FileDB -> IO (Either ErrorMessage Page)
 makePage' f db = do
   p' <- Error.tryIOError (makePage f db)
@@ -331,18 +326,19 @@ makePage' f db = do
       Left err -> Left (Error.ioeGetErrorString err)
       Right p  -> Right p
 
--- |Return a list of all available pages
+-- | Return a list of all available pages
 makeAllPages :: FileDB -> IO [Page]
 makeAllPages db = mapM (`makePage` db) (listPages db)
 
--- |Return a list of all visible pages, with content. Depending on mode pages with
--- |leading '.' or '_' are shown (ADMIN mode) or not (otherwise)
+-- | Return a list of all visible pages, with content. Depending on mode pages with
+-- leading '.' or '_' are shown (ADMIN mode) or not (otherwise)
 makePages :: FileDB -> IO [Page]
 makePages db = filter f <$> makeAllPages db where
    isAdmin = mode db == ADMIN
    f p = (h /= '.') && (h /= '_') || isAdmin where
        h = TL.head (slug p)
 
+-- | Generate a list of routes for all files in FileDB @db@.
 getStaticDirRoutes :: FileDB -> IO [Sp.SpockM FileDB () () ()]
 getStaticDirRoutes db = return $ map routeFile (files db) where
     routeFile :: (FilePath, BS8.ByteString) -> Sp.SpockM FileDB () () ()
@@ -353,7 +349,8 @@ getStaticDirRoutes db = return $ map routeFile (files db) where
 
 {-------------------------------- PageInfo ------------------------------------}
 
--- |A sanitized, short version of Page that can be returned as a JSON object
+-- | A sanitized, short version of Page that can be returned as a JSON object.
+-- PageInfo is used for showing preview cards, for example.
 data PageInfo = PageInfo {
    ti :: TL.Text,
    sl :: TL.Text,
@@ -361,12 +358,14 @@ data PageInfo = PageInfo {
    pr :: TL.Text,       -- the html'ized preview of the md file
    ts :: [TL.Text],     -- tags
    cs :: [TL.Text],     -- categories
-   im :: TL.Text       -- image link
+   im :: TL.Text        -- image link
    } deriving (Generic, ToJSON)
 
+-- | Create the sanitized PageInfo form of a Page
 mkPageInfo :: Page -> PageInfo
 mkPageInfo p = PageInfo (title p) (slug p) (author p) (mdPreview p) (tags p) (categories p) (previewImage p)
 
+-- | Fill the PageInfo's pr field with rendered html by applying the function @f@.
 renderPreviewWith :: (H.Html -> PageInfo -> H.Html) -> PageInfo -> PageInfo
 renderPreviewWith f p = PageInfo (ti p) (sl p) (au p) preview' (ts p) (cs p) (im p) where
     preview' = renderHtml html'

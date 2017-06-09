@@ -110,6 +110,7 @@ parseOpts = Opts
         metavar "STRING"
     )
 
+-- | Todo: Make a nice error page.
 errHandler :: Status -> Sp.ActionCtxT () IO ()
 errHandler _ = Sp.text "Error: Resource does not exist."
 
@@ -117,9 +118,11 @@ appMiddleware :: Opts -> Sp.SpockM FileDB () () ()
 appMiddleware o = do
     Sp.middleware logStdoutDev
     when (isAdmin o) $ do
-        Sp.middleware $ staticPolicy $ noDots >-> addBase staticDir
-        liftIO $ putStrLn ("Serving content from " ++ staticDir)
-        where staticDir = "./static"
+        -- Only in ADMIN mode do we serve files from file system directly.
+        -- The directories added here must mirror the ones in Internal.FileDB.embedAllFiles
+        Sp.middleware $ staticPolicy $ noDots >-> addBase "./static"
+        Sp.middleware $ staticPolicy $ noDots >-> addBase "./pages"
+        liftIO $ putStrLn ("Serving files from ./static and ./pages")
 
 spockConfig :: Opts -> IO (Sp.SpockCfg FileDB () ())
 spockConfig opts = do

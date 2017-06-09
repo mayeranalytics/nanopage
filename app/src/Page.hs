@@ -28,7 +28,7 @@ routePage :: FileDB.Page -> Sp.SpockM FileDB.FileDB () () ()
 routePage p = Sp.get route action where
     action = renderPage p
     route | slug == "/" = Sp.root
-          | otherwise   = (Sp.static $ TL.unpack slug)
+          | otherwise   = Sp.static $ TL.unpack slug
           where slug = FileDB.slug p
 
 renderPreview :: FileDB.Page -> Sp.ActionCtxT () (Sp.WebStateM FileDB.FileDB () ()) ()
