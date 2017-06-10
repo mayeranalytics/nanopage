@@ -69,9 +69,11 @@ content/
 
 <a name="cms-templates"></a>
 ### Templates
+Todo
 
 <a name="cms-partials"></a>
 ### Partials 
+Todo
 
 ## Running the server
 

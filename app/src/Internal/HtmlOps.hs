@@ -7,6 +7,8 @@ module Internal.HtmlOps (
 import qualified Control.Monad         as M (when)
 import qualified Data.ByteString.Char8 as BS8
 import           Data.List             (intercalate)
+import qualified Data.Text             as T (unpack)
+import qualified Data.Text.Encoding    as T (decodeUtf8)
 import qualified Data.Text.Lazy        as TL
 import           Internal.Helpers
 import           Network.URI           (isAbsoluteURI)
@@ -44,7 +46,8 @@ transformHtml base !html = do
 -- |Convert markdown string to html string
 markdownToHtmlString :: BS8.ByteString -> HTML
 markdownToHtmlString !input = t input where
-    t = writeHtmlString def {writerReferenceLinks = True} . handleError . readMarkdown def . BS8.unpack
+    t = writeHtmlString def {writerReferenceLinks = True} . handleError . readMarkdown def . unpack
+    unpack = T.unpack . T.decodeUtf8
 
 -- |Extract the src of the first image occuring in html
 getFirstImage :: TL.Text -> IO TL.Text
