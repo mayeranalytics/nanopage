@@ -10,6 +10,7 @@ admin: bin/nanopage
 	cd content; ../bin/nanopage -mADMIN
 
 bin/nanopage:
+	mkdir -p bin
 	make -C app
 
 ghcid:
