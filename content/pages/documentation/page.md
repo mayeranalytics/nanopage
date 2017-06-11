@@ -160,28 +160,55 @@ class Partial a where
 
 ## Resources
 
+### SEO
+
 - [Google on SEO](https://support.google.com/webmasters/answer/79812?hl=en)
 - [Favicon checker](https://realfavicongenerator.net/favicon_checker)
 
 ### Markdown editors
 
-#### macOS X
+There is no lack of choice when it comes to Markdown editors. Many editors implement their own Markdown flavors which can make it jsut a little bit harder to get good results with *nanoPage*: Markdown may look really nice in the editor but may look less appealing when rendered by *nanoPage*'s renderer (pandoc).
 
-[MacDown](https://macdown.uranusjr.com/) is a good, opensource Markdown editor
-for macOS X. It has a customizable renderer, syntax highlighting, 
-auto-completion.
+#### General purpose editors with plugins
 
-[Mou](http://25.io/mou/) has a checkered past and was resurrected in a 
-[Indiegogo](https://www.indiegogo.com/projects/mou-1-0-markdown-editor-on-os-x-for-you) campaign. macOS Sierra is still not supported.
-
-Many editors have plugins that provide a good editing experience. 
+Many general purpose editors have plugins that provide a good editing experience. These editors are usually free and available across platforms.
 
 [Atom](https://atom.io/) with the [markdown-preview-plus](https://atom.io/packages/markdown-preview-plus) package works very well. Then [markdown-preview-enhanced](https://atom.io/packages/markdown-preview-enhanced) package looks promising but is still in beta.
 
+[Visual Studio Code](https://code.visualstudio.com) is a relative newcomer
+to the editor space, but it is quickly gaining traction.
+
+[Sublime Text](https://www.sublimetext.com/)
+
+#### Cross-platform
+
+[Typora](https://typora.io/) claims to be a "truly minimal markdown editor". It differs from the other editors in that it does not have a preview editor. Instead the markdown is applied while typing, the result is a very good editing experience. Mathjax is supported, note that inline equations have to be enabled in the settings. *Typora* is for macOS X is still in beta.
+
+#### MacOS X
+
+[MacDown](https://macdown.uranusjr.com/) is a good, opensource Markdown editor for macOS X. It has a customizable renderer, syntax highlighting, auto-completion, and more.
+
+[Mou](http://25.io/mou/) has a checkered past and was resurrected in an [Indiegogo](https://www.indiegogo.com/projects/mou-1-0-markdown-editor-on-os-x-for-you) campaign. It's not free and macOS Sierra is still not supported.
+
 #### Linux
 
-todo
+Linux is as blessed with choice as any platform. Of course the usual candidates [emacs](http:emacs.org) and [vim](http://www.vim.org/) can be used. Some extensions even allow preview, such as [markdown-mode](http://jblevins.org/projects/markdown-mode/) for emacs and [vim-markdown-preview](https://github.com/JamshedVesuna/vim-markdown-preview). Both open a browser window.
+
+[Remarkable](https://remarkableapp.github.io/)
+
+[Haroopad](http://pad.haroopress.com/)
 
 #### Windows
 
-todo
+[MarkdownPad](http://markdownpad.com/)
+
+
+
+
+
+
+
+
+
+
+
