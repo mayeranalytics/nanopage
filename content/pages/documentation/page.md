@@ -36,7 +36,9 @@ can be found on [github](https://github.com/mayeranalytics/nanoPage).
 - meta-information such as: Author, keywords, description
 
 ### What *nanoPage* is not
-*nanoPage* is *not* a multi-user WYSIWYG flat file CMS like [*Grav*](https://getgrav.org) or [*Ghost*](https://ghost.org/).
+*nanoPage* is *not* a multi-user WYSIWYG flat file CMS like [*Grav*](https://getgrav.org) or [*Ghost*](https://ghost.org/). The admin panel
+is rather minimal, in particular it does not allow content editing. 
+Instead, content is edited in a markdown editor of your choice. 
 
 ### Pros and cons
 *nanoPage* was created for a narrow use-case, so it's worth clearly stating
@@ -48,7 +50,7 @@ the pros and cons:
 - Self-contained excutable means a small footprint
 - Small code-base
 - Fast
-- Dynamic content can be inserted via [*Partials*](#partials).
+- Dynamic content can be inserted via [*Partials*](#partials). This makes *nanoPage* a good basis for single-page apps.
 - Markdown
 
 #### Cons
@@ -81,8 +83,7 @@ To run the server the current working directory must be the content
 directory, so a typical start looks like
 
 ```bash
-cd contents; ../bin/nanopage    # or
-./bin/nanopage -c contents
+./bin/nanopage
 ```
 
 ```text
@@ -109,7 +110,19 @@ The command line options are:
 - `mode`: The server mode identifies the deployment environment, it be `ADMIN` or `PROD`. `PROD` is the default. The admin pages can only be seen in the `ADMIN` mode.
 - `content`: Before running the server change the working directory to this file path.
 
-## Source Code Overview
+## Editing content
+
+Since all content is embedded in the executable content has to be edited
+offline. The server is run locally in admin mode by providing the 
+`-m ADMIN` flag.
+
+```bash
+cd contents; ../bin/nanopage -m ADMIN   # or
+./bin/nanopage -m ADMIN -C contents
+```
+
+
+## Internals
 
 The source code can be found on [github](https://github.com/mayeranalytics/nanoPage).
 
@@ -149,3 +162,26 @@ class Partial a where
 
 - [Google on SEO](https://support.google.com/webmasters/answer/79812?hl=en)
 - [Favicon checker](https://realfavicongenerator.net/favicon_checker)
+
+### Markdown editors
+
+#### macOS X
+
+[MacDown](https://macdown.uranusjr.com/) is a good, opensource Markdown editor
+for macOS X. It has a customizable renderer, syntax highlighting, 
+auto-completion.
+
+[Mou](http://25.io/mou/) has a checkered past and was resurrected in a 
+[Indiegogo](https://www.indiegogo.com/projects/mou-1-0-markdown-editor-on-os-x-for-you) campaign. macOS Sierra is still not supported.
+
+Many editors have plugins that provide a good editing experience. 
+
+[Atom](https://atom.io/) with the [markdown-preview-plus](https://atom.io/packages/markdown-preview-plus) package works very well. Then [markdown-preview-enhanced](https://atom.io/packages/markdown-preview-enhanced) package looks promising but is still in beta.
+
+#### Linux
+
+todo
+
+#### Windows
+
+todo

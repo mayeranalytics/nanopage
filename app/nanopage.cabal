@@ -36,6 +36,7 @@ executable nanopage
                      , yaml
                      , pandoc
                      , filepath
+                     , filemanip
                      , slug
                      , file-embed
                      , containers

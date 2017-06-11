@@ -121,12 +121,12 @@ appMiddleware o = do
         -- Only in ADMIN mode do we serve files from file system directly.
         -- The directories added here must mirror the ones in Internal.FileDB.embedAllFiles
         Sp.middleware $ staticPolicy $ noDots >-> addBase "./static"
-        Sp.middleware $ staticPolicy $ noDots >-> addBase "./pages"
+        Sp.middleware $ staticPolicy $ noDots >-> (hasPrefix "pages") >-> addBase "."
         liftIO $ putStrLn ("Serving files from ./static and ./pages")
 
 spockConfig :: Opts -> IO (Sp.SpockCfg FileDB () ())
 spockConfig opts = do
-    let fileDb = defaultFileDB { FileDB.mode = mode opts }
+    fileDb <- defaultFileDB (mode opts)
     sessionCfg <- Sp.defaultSessionCfg ()
     let conn = Sp.PCConn Sp.ConnBuilder {
         Sp.cb_createConn = return fileDb ,
@@ -151,12 +151,13 @@ spockConfig opts = do
 app :: Opts -> Sp.SpockM FileDB () () ()
 app opts = do
     pages <- Sp.runQuery makePages
-    let pages' = filter (not.isHiddenPage) pages
+    let pages' | mode opts == ADMIN = pages
+               | otherwise = filter (not.isHiddenPage) pages
     liftIO $ putStrLn "Pages:"
     liftIO $ forM_ pages' (TL.putStrLn . ("> " <>) . FileDB.slug)
     -- now add all the routes
     sitemap <- liftIO $ mkSitemap (serverName opts) (map (TL.unpack . FileDB.slug) pages')
-    Sp.get "sitemap.xml" (Sp.xml $ T.encodeUtf8 $ TL.toStrict sitemap)
+    Sp.get "sitemap.xml" $ (Sp.xml . T.encodeUtf8 . TL.toStrict) sitemap
     forM_ pages' Page.routePage
     forM_ pages' Page.routePreview
     sequence_ extraRoutes
@@ -172,7 +173,7 @@ main = do
     print opts
     setCurrentDirectory (contentDir opts)
     if contentDir opts /= "."
-        then (putStrLn $ "Working directory changed to \"" ++ contentDir opts ++ "\"")
-        else (putStrLn "Working directory is \".\"")
+    then (putStrLn $ "Working directory changed to \"" ++ contentDir opts ++ "\"")
+    else (putStrLn "Working directory is \".\"")
     config <- spockConfig opts
     Sp.runSpock (portNumber opts) (Sp.spock config $ appMiddleware opts >> (app opts))
