@@ -2,6 +2,12 @@
 {
     background-color: #B71C1C;
 }
+ul > li {
+    list-style-type: disc;
+    margin-left: 2em;
+}
+span.math {
+}
 footer.page-footer
 {
     background-color: #546E7A;
