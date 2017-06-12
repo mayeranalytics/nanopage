@@ -80,7 +80,7 @@ readAllFiles = do
     templates <- fileList "templates"
     mapM get (pages ++ templates) where
         get p = do
-            c <- BS.readFile p
+            c <- BS.readFile (tr' "readFile:" p)
             return (p, c)
         fileList :: FilePath -> IO [FilePath]
         fileList = Find.find notHidden regularFile where

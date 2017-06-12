@@ -46,7 +46,12 @@ transformHtml base !html = do
 -- |Convert markdown string to html string
 markdownToHtmlString :: BS8.ByteString -> HTML
 markdownToHtmlString !input = t input where
-    t = writeHtmlString def {writerReferenceLinks = True} . handleError . readMarkdown def . unpack
+    rOpts = def
+    wOpts = def {
+        writerReferenceLinks = True,
+        writerHTMLMathMethod = MathJax "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"
+        }
+    t = writeHtmlString wOpts . handleError . readMarkdown rOpts . unpack
     unpack = T.unpack . T.decodeUtf8
 
 -- |Extract the src of the first image occuring in html

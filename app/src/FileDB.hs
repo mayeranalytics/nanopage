@@ -32,7 +32,6 @@ import qualified System.IO.Error                      as Error
 import           Text.Blaze.Html.Renderer.Text        (renderHtml)
 import qualified Text.Mustache                        as M
 import qualified Text.Mustache.Compile                as M
-import           Text.Pandoc
 import           Text.Parsec.Error                    (errorMessages,
                                                        messageString)
 import           Text.XML.HXT.Core                    as HXT hiding (app, when)

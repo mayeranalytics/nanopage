@@ -99,14 +99,14 @@ Todo
 <a name="cms-templates"></a>
 
 ### Templates
-Templates reside in the `content/templates` folder. A template is simply an html file with [Mustache](https://mustache.github.io/) patterns. The Mustache patterns are used to include basic features and [partials](#cms-partials). For example, the information contained in the `config.yaml` file are available as `{{title}}`, `{{keywords}}`, `{{author}}`, etc. Mustache template patterns follow the convention that double braces `{{}}` entity-escape  its content whereas the triple braces `{{{}}}` do not.
+Templates reside in the `content/templates` folder. A template is simply an html file with [Mustache](https://mustache.github.io/) patterns. The Mustache patterns are used to include basic features and [partials](#cms-partials). For example, the information contained in the `config.yaml` file are available as, etc. Mustache template patterns follow the convention that double braces  entity-escape  its content whereas the triple braces do not.
 
-- `{{title}}`
-- `{{author}}`
-- `{{keywords}}`
-- `{{tags}}`
-- `{{categories}}`
-- `{{{content}}}`: Note the triple braces, i.e. do not entity-escape the content.
+- `title`
+- `author`
+- `keywords`
+- `tags`
+- `categories`
+- `content`: Use triple braces, i.e. do not entity-escape the content.
 
 Todo
 
