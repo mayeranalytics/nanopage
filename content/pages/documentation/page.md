@@ -209,7 +209,7 @@ class Partial a where
 
 ### Markdown editors
 
-There is no lack of choice when it comes to Markdown editors. Many editors implement their own Markdown flavors which can make it jsut a little bit harder to get good results with *nanoPage*: Markdown may look really nice in the editor but may look less appealing when rendered by *nanoPage*'s renderer (pandoc).
+There is no lack of choice when it comes to Markdown editors. Many editors implement their own Markdown flavor which can make it just a little bit harder to get good results with *nanoPage*: Markdown may look really nice in the editor but may look less appealing when rendered by *nanoPage*'s renderer (pandoc).
 
 The editor that stands out is [Typora](https://typora.io/). It differs from the other editors in that it does not have a preview editor. Instead the markdown is applied while typing, the result is a highly enjoyable editing experience. Mathjax, and other nifty features, are supported. (Note that inline equations have to be enabled in the settings.) *Typora* is still in beta and still free. The stable release will probably require a paid license. *Typora* is available for Linux, Windows and Mac.
 
@@ -221,13 +221,13 @@ Many general purpose editors have plugins that provide a good editing experience
 
 [Visual Studio Code](https://code.visualstudio.com) is a relative newcomer to the editor space, but it is quickly gaining traction.
 
-[Sublime Text](https://www.sublimetext.com/)
+[Sublime Text](https://www.sublimetext.com/) is a somewhat pricey text editor with a ton of plugins. Strangely, there seems to be no live preview *within* Sublime Text. Instead, a browser will be opened.
 
 #### MacOS X
 
 [MacDown](https://macdown.uranusjr.com/) is a good, opensource Markdown editor for macOS X. It has a customizable renderer, syntax highlighting, auto-completion, and more.
 
-[Mou](http://25.io/mou/) has a checkered past and was resurrected in an [Indiegogo](https://www.indiegogo.com/projects/mou-1-0-markdown-editor-on-os-x-for-you) campaign. It's not free and macOS Sierra is still not supported.
+[Mou](http://25.io/mou/) has a checkered past and was resurrected in an [Indiegogo](https://www.indiegogo.com/projects/mou-1-0-markdown-editor-on-os-x-for-you) campaign. It's not free and macOS Sierra is still not supported. It's hard to come up with a reason to use it.
 
 #### Linux
 
@@ -243,11 +243,9 @@ Linux is as blessed with choice as any platform. Of course the usual candidates 
 
 
 
+## Outlook
 
+### Extend markdown
 
-
-
-
-
-
+Pandoc is a powerful document converter and it's quite easy to extend the standard markdown. Have a look at "[Scripting with pandoc](http://pandoc.org/scripting.html)".
 
