@@ -6,7 +6,7 @@ all: bin/nanopage
 run: bin/nanopage
 	bin/nanopage
 
-admin: bin/nanopage
+admin:
 	cd content; ../bin/nanopage -mADMIN
 
 bin/nanopage:
