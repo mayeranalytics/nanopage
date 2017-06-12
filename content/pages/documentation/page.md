@@ -8,17 +8,16 @@ This is the *nanoPage* documentation.
 
 *nanoPage* is a minimal static flat file CMS based on [Haskell](http://www.haskell.org) [Spock](htp://spock.li). It is suitable for small websites
 or microsites with mostly static content. 
-Content is stored as [Markdown](https://en.wikipedia.org/wiki/Markdown),
-and edited offline using any Markdown editor. A *nanoPage* website is published by compiling both source code and static content. The resulting executable is fully self-contained with web-server *and* content. As such, it is fast, easy to deploy and easy to secure. A demo is running on [http://nanopage.li](http://nanopage.li).
+Content is stored as [Markdown](https://en.wikipedia.org/wiki/Markdown), and edited offline using any Markdown editor. Publication of a *nanoPage* website requires compiling the source code. The resulting executable is fully self-contained, i.e. it contains the web-server *and* all the content. In order to deploy a website just copy the executable to the server and run it. Since there is no database and no file system *nanoPage* is very secure. 
 
-*nanoPage* is covered by the very permissive MIT license. The source code
-can be found on [github](https://github.com/mayeranalytics/nanoPage).
+A demo is running on [http://nanopage.li](http://nanopage.li).
+
+*nanoPage* is covered by the very permissive MIT license. The source code can be found on [github](https://github.com/mayeranalytics/nanoPage).
 
 ### Motivation
 - easy to extend
 - avoid heavy frameworks
 - lightweight: Self-contained executable including all the static content
-- @TODO
 
 ### Use-cases
 - blogs
@@ -27,35 +26,32 @@ can be found on [github](https://github.com/mayeranalytics/nanoPage).
 
 ### Features
 
-#### @TODO
-- templates
-- partials
-- preview
-- tags
-- categories
-- meta-information such as: Author, keywords, description
+- Templates
+- Partials
+- Preview cards
+- Tags
+- Categories
+- Meta-information such as: Author, keywords, description
 
 ### What *nanoPage* is not
-*nanoPage* is *not* a multi-user WYSIWYG flat file CMS like [*Grav*](https://getgrav.org) or [*Ghost*](https://ghost.org/). The admin panel
-is rather minimal, in particular it does not allow content editing. 
-Instead, content is edited in a markdown editor of your choice. 
+*nanoPage* is *not* a multi-user WYSIWYG flat file CMS like [*Grav*](https://getgrav.org) or [*Ghost*](https://ghost.org/). The admin panel is rather minimal, in particular it does not allow content editing. Instead, content is edited offline in a markdown editor of your choice. 
 
 ### Pros and cons
 *nanoPage* was created for a narrow use-case, so it's worth clearly stating
 the pros and cons:
 
 #### Pros
-- Easy to deploy because web-server and content are contained in the excutable.
-- Easy to secure, because there is nothing to hack, essentially.
+- Easy to deploy because web-server *and* content are contained in the excutable. A typical executable has a size of <20MB (after [upx](https://upx.github.io/) compression).
+- Easy to secure, because there is nothing to hack, essentially
 - Self-contained excutable means a small footprint
-- Small code-base
+- Small code-base - the core is about 1000 lines of Haskell.
 - Fast
 - Dynamic content can be inserted via [*Partials*](#partials). This makes *nanoPage* a good basis for single-page apps.
 - Markdown
 
 #### Cons
 - No online editing
-- Every deployment requires re-compilation
+- Every deployment requires re-compilation and copying of the executable
 - Content resides in RAM, hence *nanoPage* is not suitable for websites with large static content.
 
 <a name="CMS"></a>
@@ -64,18 +60,62 @@ the pros and cons:
 ```bash
 content/
 ├── Makefile
-├── pages
-├── static
-└── templates
+├── pages/
+├── static/
+└── templates/
 ```
 
+Each page in has its own folder in `content/pages`.
+
+<a name="cms-add-a-page"></a>
+
+### How to add a page
+
+1. Create a directory in `content/pages/`. The directory name can serve as the slug, but you can also define the slug in the `config.yaml` file. Let's assume the directory is called `my-new-page/`.
+2. Create a markdown file in `content/pages/my-new-page/`, the name of the file identifies the template to use. For example, `page.md` will use the template `content/templates/page.html`.
+3. Create a `config.yaml` file in `content/pages/my-new-page/` and specify title, author, slug, etc. See the section "[The config file](#cms-config-file)" below. 
+4. Edit the markdown file in the `content/pages/my-new-page/` and keep all assets such as images, videos, etc. in this directory or in the `static/` directory.
+5. Run *nanoPage* locally in admin mode. I.e. execute `bin/nanopage -m ADMIN -C content`. In admin mode *nanoPage* will serve files directly from the file system.
+6. To publish the new page compile the executable (`make`), optionally compress it (`make compress`), test it  and finally copy it to the server where it should be run in production mode `bin/nanopage`. See "[Running the server](#running-the-server)" for details.
+
+<a name="cms-config-file"></a>
+
+### The config file
+
+The config file contains information such as page title, slug, author, etc. It is located in the page directory `content/pages/<page-name>/` and must have the file name `config.yaml`.
+
+```yaml
+title: My New Page
+slug: my-new-page
+keywords: [A, list, of, keywords]
+tags: [A, list, of, tags]
+categories: [A, list, of, categories]
+author: A. Name
+```
+
+Todo
+
 <a name="cms-templates"></a>
+
 ### Templates
+Templates reside in the `content/templates` folder. A template is simply an html file with [Mustache](https://mustache.github.io/) patterns. The Mustache patterns are used to include basic features and [partials](#cms-partials). For example, the information contained in the `config.yaml` file are available as `{{title}}`, `{{keywords}}`, `{{author}}`, etc. Mustache template patterns follow the convention that double braces `{{}}` entity-escape  its content whereas the triple braces `{{{}}}` do not.
+
+- `{{title}}`
+- `{{author}}`
+- `{{keywords}}`
+- `{{tags}}`
+- `{{categories}}`
+- `{{{content}}}`: Note the triple braces, i.e. do not entity-escape the content.
+
 Todo
 
 <a name="cms-partials"></a>
 ### Partials 
+A partial  provides a feature. It requires the implementation of a `Partial` class . See the [Partials](#internals-partials) section below for more details. 
+
 Todo
+
+<a name="running-the-server"></a>
 
 ## Running the server
 
@@ -124,6 +164,8 @@ cd contents; ../bin/nanopage -m ADMIN   # or
 
 ## Internals
 
+*nanoPage* uses the [Spock](https://hackage.haskell.org/package/Spock) web framework, [stache](https://hackage.haskell.org/package/stache) for Mustache templates, [pandoc](https://hackage.haskell.org/package/pandoc) for conversion from markup to html and [file-embed](https://hackage.haskell.org/package/file-embed) for embedding static content.
+
 The source code can be found on [github](https://github.com/mayeranalytics/nanoPage).
 
 ```bash
@@ -148,7 +190,7 @@ app/
 └── stack.yaml
 ```
 
-### Partials
+### <a name="internals-partials"></a>Partials
 Partials are located in `app/src/Partials`. A partial has 
 to implement class `Partial` defined in `app/src/Internal/Partial.hs`.
 
@@ -169,20 +211,17 @@ class Partial a where
 
 There is no lack of choice when it comes to Markdown editors. Many editors implement their own Markdown flavors which can make it jsut a little bit harder to get good results with *nanoPage*: Markdown may look really nice in the editor but may look less appealing when rendered by *nanoPage*'s renderer (pandoc).
 
+The editor that stands out is [Typora](https://typora.io/). It differs from the other editors in that it does not have a preview editor. Instead the markdown is applied while typing, the result is a highly enjoyable editing experience. Mathjax, and other nifty features, are supported. (Note that inline equations have to be enabled in the settings.) *Typora* is still in beta and still free. The stable release will probably require a paid license. *Typora* is available for Linux, Windows and Mac.
+
 #### General purpose editors with plugins
 
 Many general purpose editors have plugins that provide a good editing experience. These editors are usually free and available across platforms.
 
 [Atom](https://atom.io/) with the [markdown-preview-plus](https://atom.io/packages/markdown-preview-plus) package works very well. Then [markdown-preview-enhanced](https://atom.io/packages/markdown-preview-enhanced) package looks promising but is still in beta.
 
-[Visual Studio Code](https://code.visualstudio.com) is a relative newcomer
-to the editor space, but it is quickly gaining traction.
+[Visual Studio Code](https://code.visualstudio.com) is a relative newcomer to the editor space, but it is quickly gaining traction.
 
 [Sublime Text](https://www.sublimetext.com/)
-
-#### Cross-platform
-
-[Typora](https://typora.io/) claims to be a "truly minimal markdown editor". It differs from the other editors in that it does not have a preview editor. Instead the markdown is applied while typing, the result is a very good editing experience. Mathjax is supported, note that inline equations have to be enabled in the settings. *Typora* is for macOS X is still in beta.
 
 #### MacOS X
 
