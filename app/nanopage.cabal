@@ -46,6 +46,7 @@ executable nanopage
                      , string-qq
                      , optparse-applicative
                      , directory
+                     , open-browser
     other-modules:   Partials.TagList
                      , Partials.KeywordList
                      , Partials.TagList

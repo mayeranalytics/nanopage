@@ -25,6 +25,7 @@ import           Text.Blaze.Html.Renderer.Text        (renderHtml)
 import           Text.Blaze.Html5                     ((!))
 import qualified Text.Blaze.Html5                     as H
 import qualified Text.Blaze.Html5.Attributes          as A
+import           Web.Browser                          (openBrowser)
 import           Web.Spock                            ((<//>))
 import qualified Web.Spock                            as Sp
 import qualified Web.Spock.Config                     as Sp
@@ -176,4 +177,7 @@ main = do
     then (putStrLn $ "Working directory changed to \"" ++ contentDir opts ++ "\"")
     else (putStrLn "Working directory is \".\"")
     config <- spockConfig opts
+    when (mode opts == ADMIN) $ do
+        success <- openBrowser $ "http://localhost:" ++ (show $ portNumber opts)
+        when (not success) (putStrLn "Failed to open browser.")
     Sp.runSpock (portNumber opts) (Sp.spock config $ appMiddleware opts >> (app opts))
