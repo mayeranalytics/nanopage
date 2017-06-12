@@ -2,9 +2,9 @@
 {
     background-color: #B71C1C;
 }
-ul > li {
+#content ul > li {
     list-style-type: disc;
-    margin-left: 2em;
+    margin-left: 2.5em;
 }
 span.math {
 }
