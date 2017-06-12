@@ -21,7 +21,17 @@ todo
 [github repo](https://github.com/mayeranalytics/nanoPage)
 ```
 
-[[github repo](https://github.com/mayeranalytics/nanoPage)]
+[github repo](https://github.com/mayeranalytics/nanoPage)
+
+### Images
+
+Images are inserted using this syntax:
+
+```
+![alt text](path-to-file)
+```
+
+![this is an image](fibonacci.svg)
 
 ### Tables
 
@@ -55,7 +65,15 @@ Inline maths is done with single-dollar quoted latex `$\forall_{i\in\mathbb N}\,
 
 Here's a more sophisticated example:
 
-$$ \begin{bmatrix}		1 & x & 0 \\		0 & 1 & -1	\end{bmatrix}\begin{bmatrix}		1  \\		y  \\		1	\end{bmatrix}	=\begin{bmatrix}		1+xy  \\		y-1	\end{bmatrix} $$.
+$$ \begin{bmatrix}		1 & x & 0 \\		0 & 1 & -1	\end{bmatrix}\begin{bmatrix}		1  \\		y  \\		1	\end{bmatrix}	=\begin{bmatrix}		1+xy  \\		y-1	\end{bmatrix} $$
+
+This was produced with this $\LaTeX$ code
+
+```latex
+\begin{bmatrix} 1 & x & 0 \\ 0 & 1 & -1	\end{bmatrix}
+\begin{bmatrix} 1 \\ y  \\ 1 \end{bmatrix}	
+= \begin{bmatrix}		1+xy  \\	    y-1	\end{bmatrix}
+```
 
 
 
