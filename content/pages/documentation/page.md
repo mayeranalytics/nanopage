@@ -41,6 +41,7 @@ A demo is running on [http://nanopage.li](http://nanopage.li).
 the pros and cons:
 
 #### Pros
+
 - Easy to deploy because web-server *and* content are contained in the excutable. A typical executable has a size of <20MB (after [upx](https://upx.github.io/) compression).
 - Easy to secure, because there is nothing to hack, essentially
 - Self-contained excutable means a small footprint
