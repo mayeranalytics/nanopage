@@ -6,15 +6,53 @@ This page demonstrates what can be achieved with markdown.
 
 ## Formatting
 
+First off, Adam Pritchard's [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) is very useful.
+
+### Basics
+
+*Italics* are created with `*italics*` or `_italics_` (text enclosed by single '\*' or single '\_'). **Boldface** is created with `**Boldface**` or `__Boldface__`  (text enclosed by double '\*' or double '_'). ~~Strikethrough~~ is written like `~~strikethrough~~` (text enclosed by double '~'). 
+
 ### Headers
 
-todo
+```markdown
+# This is an H1
+## This is an H2
+###### This is an H6
+```
 
 ### Lists
 
-todo
+- unordered item 1
+- unordered item 2
+  - subitem 3
+  - subitem 4
+
+1. ordered item 1
+2. ordered item 2
+
+```markdown
+- unordered item 1
+- unordered item 2
+	- subitem 3
+	- subitem 4
+```
+
+```markdown
+1. ordered item 1
+2. ordered item2
+```
+
+### Blockquotes
+
+> This is a block quote.
+
+```markdown
+> This is a block
+> quote.
+```
 
 ### Links
+
 `[Link text](URI)`
 
 ```markdown
@@ -47,11 +85,20 @@ Images are inserted using this syntax:
 | Hello    |   this   |       is |
 | a        |  table   |        ! |
 
-Adam Pritchard's [Markdown Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet) is very useful.
+### Footnotes
+
+You can create footnotes like this[^footnote].
+
+[^footnote]: Here is the *text* of the **footnote**.
+
+```markdown
+You can create footnotes like this[^footnote].
+[^footnote]: Here is the *text* of the **footnote**.
+```
 
 ## Maths
 
-Equations can be set easily. For example
+Equations can be set easily by using *MathJax*. For example
 
 $$ a^2 + b^2 = c^2 $$
 
@@ -75,5 +122,5 @@ This was produced with this $\LaTeX$ code
 = \begin{bmatrix}		1+xy  \\	    y-1	\end{bmatrix}
 ```
 
-
+A good quick reference can be found on [stackexchange](https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference).
 
