@@ -55,6 +55,10 @@ the pros and cons:
 - Every deployment requires re-compilation and copying of the executable
 - Content resides in RAM, hence *nanoPage* is not suitable for websites with large static content.
 
+### Why Markdown?
+
+When it comes to content editing in a CMS there are effectively three choices. Straight HTML gives you total control, but structure elements such as lists and tables are cumbersome. Then there are the [wysiwyg](https://wordpress.org/plugins/tags/wysiwyg/) editors such as *TinyMCE* or *CKEditor*. They are user friendly but require clicking around in a GUI which slows down the editing process. Lastly, there are the markup languages such as *BBEdit* and *Markdown*. They strike a good balance between typing speed and flexibility. In the case of *Markdown* there are a lot of excellent editors available, free and for-pay, and it is easy to learn. See the demo page on [nanopage.li](http://nanoplage.li/demo).  *Markdown* is also used for editing user content on sites like [Stackexchange](https://stackexchange.com/) or [Github](https://github.com/). From an implementation point of view, *Markdown* is supported by the wonderful [pandoc](https://hackage.haskell.org/package/pandoc) package which opens many possibilities for extending the standard *Markdown* syntax to cover some flavours that are supported by some of the Editors. See the section ["Markdown Editors"](#markdown-editors) below for more.
+
 <a name="CMS"></a>
 ## CMS
 
@@ -207,6 +211,8 @@ class Partial a where
 
 - [Google on SEO](https://support.google.com/webmasters/answer/79812?hl=en)
 - [Favicon checker](https://realfavicongenerator.net/favicon_checker)
+
+<a name="markdown-editors"></a>
 
 ### Markdown editors
 
