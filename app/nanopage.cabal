@@ -47,12 +47,12 @@ executable nanopage
                      , optparse-applicative
                      , directory
                      , open-browser
-    other-modules:   Partials.TagList
-                     , Partials.KeywordList
-                     , Partials.TagList
-                     , Partials.CategoryList
+    other-modules:   Partials
                      , Partials.AdminBlock
+                     , Partials.CategoryList
+                     , Partials.KeywordList
                      , Partials.TagCloud
+                     , Partials.TagList
                      , Page
                      , FileDB
                      , Sitemap

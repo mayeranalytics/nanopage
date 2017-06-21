@@ -39,11 +39,7 @@ import qualified Internal.Partial                     as Partial
 import           Page                                 (renderPage,
                                                        renderPreview, routePage,
                                                        routePreview)
-import           Partials.AdminBlock
-import           Partials.CategoryList
-import           Partials.KeywordList
-import           Partials.TagCloud
-import           Partials.TagList
+import           Partials
 import           Sitemap
 
 helpHeader :: String
