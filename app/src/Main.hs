@@ -1,4 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TemplateHaskell   #-}
 module Main where
 
 import           Control.Monad                        (filterM, forM_, liftM,
@@ -6,13 +7,14 @@ import           Control.Monad                        (filterM, forM_, liftM,
 import           Control.Monad.IO.Class               (MonadIO, liftIO)
 import qualified Data.ByteString.Lazy                 as BL
 import           Data.Maybe                           (fromMaybe)
-import           Data.Monoid
+import           Data.Monoid                          ((<>))
 import qualified Data.Text                            as T
 import qualified Data.Text.Encoding                   as T
 import qualified Data.Text.Lazy                       as TL
 import qualified Data.Text.Lazy.IO                    as TL (putStrLn)
 import           GHC.Exts                             (fromString)
 import qualified Internal.SpockExt                    as Sp
+import           Language.Haskell.TH
 import           Network.HTTP.Types.Status            (Status)
 import           Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import           Network.Wai.Middleware.Static
@@ -40,6 +42,7 @@ import           Page                                 (renderPage,
                                                        renderPreview, routePage,
                                                        routePreview)
 import           Partials
+import           PartialsTH                           (getRoutesOfPartials)
 import           Sitemap
 
 helpHeader :: String
@@ -63,17 +66,14 @@ instance Show Opts where
         ++ "\n  content\t" ++ show (contentDir opts)
 
 -- | Server config info
-extraRoutes :: [Sp.SpockM FileDB () () ()]
-extraRoutes = Partial.extraRoutes AdminBlock
-           ++ Partial.extraRoutes CategoryList
-           ++ Partial.extraRoutes KeywordList
-           ++ Partial.extraRoutes TagCloud
-           ++ Partial.extraRoutes TagList
 defaultPortNumber = 3000 :: Int
 defaultServerName = "localhost" :: String
 
+extraRoutes :: [Sp.SpockM FileDB () () ()]
+extraRoutes = $(getRoutesOfPartials)
+
 isAdmin :: Opts -> Bool
-isAdmin o = mode o == ADMIN
+isAdmin = (ADMIN ==) . mode
 
 parseOpts :: Parser Opts
 parseOpts = Opts
@@ -118,8 +118,8 @@ appMiddleware o = do
         -- Only in ADMIN mode do we serve files from file system directly.
         -- The directories added here must mirror the ones in Internal.FileDB.embedAllFiles
         Sp.middleware $ staticPolicy $ noDots >-> addBase "./static"
-        Sp.middleware $ staticPolicy $ noDots >-> (hasPrefix "pages") >-> addBase "."
-        liftIO $ putStrLn ("Serving files from ./static and ./pages")
+        Sp.middleware $ staticPolicy $ noDots >-> hasPrefix "pages" >-> addBase "."
+        liftIO $ putStrLn "Serving files from ./static and ./pages"
 
 spockConfig :: Opts -> IO (Sp.SpockCfg FileDB () ())
 spockConfig opts = do
@@ -170,10 +170,10 @@ main = do
     print opts
     setCurrentDirectory (contentDir opts)
     if contentDir opts /= "."
-    then (putStrLn $ "Working directory changed to \"" ++ contentDir opts ++ "\"")
-    else (putStrLn "Working directory is \".\"")
+    then putStrLn $ "Working directory changed to \"" ++ contentDir opts ++ "\""
+    else putStrLn "Working directory is \".\""
     config <- spockConfig opts
     when (mode opts == ADMIN) $ do
-        success <- openBrowser $ "http://localhost:" ++ (show $ portNumber opts)
-        when (not success) (putStrLn "Failed to open browser.")
-    Sp.runSpock (portNumber opts) (Sp.spock config $ appMiddleware opts >> (app opts))
+        success <- openBrowser $ "http://localhost:" ++ show (portNumber opts)
+        unless success (putStrLn "Failed to open browser.")
+    Sp.runSpock (portNumber opts) (Sp.spock config $ appMiddleware opts >> app opts)
