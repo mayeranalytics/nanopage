@@ -1,6 +1,6 @@
 all: ../bin/nanopage
 
-../bin/nanopage: 
+../bin/nanopage:
 	stack --local-bin-path ../bin install nanopage:exe:nanopage
 
 ghcid:
@@ -11,9 +11,6 @@ src/Partials.hs: mkPartialsHs
 
 mkPartialsHs: src/MkPartialsHs.hs
 	stack build nanopage:exe:mkPartialsHs
-
-atom:
-	atom .
 
 clean:
 	rm -f ../bin/nanopage; stack clean
