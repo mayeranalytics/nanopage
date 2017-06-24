@@ -82,7 +82,10 @@ executable nanopage
                      , directory
                      , open-browser
                      , template-haskell
+                     , tostring
     other-modules:     Nanopage
+                     , Config
+                     , CliOpts
                      , Page
                      , FileDB
                      , Sitemap

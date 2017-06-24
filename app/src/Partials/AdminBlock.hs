@@ -6,6 +6,7 @@ import           Control.Monad                 (forM_, when)
 import           Data.List                     (intercalate, nub, sort)
 import           Data.Monoid                   ((<>))
 import           Data.String.QQ
+import           Data.String.ToString
 import qualified Data.Text                     as T (Text, pack, unlines,
                                                      unpack)
 import qualified Data.Text.Lazy                as TL (Text, toStrict, unpack)
