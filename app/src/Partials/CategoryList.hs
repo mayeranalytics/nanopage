@@ -10,16 +10,17 @@ import qualified Text.Blaze.Html5.Attributes as A
 import           Internal.FileDB
 import           Internal.Partial
 
+-- | Partial "CategoryList"
 data CategoryList = CategoryList
 
 instance Partial CategoryList where
-    extraRoutes = \_ -> []
-    partial = _partial
-    partialName = \_ -> "categorylist"
+    extraRoutes _ = []
+    partial       = _partial
+    partialName _ = "categorylist"
 
 _partial :: CategoryList -> FileDB -> Page -> Params -> H.Html
-_partial _ _ p _ = H.div ! A.class_ (fromString "categorylist") $ do
-    forM_ (categories p) (\t->H.div ! categoryClass $ H.toHtml t)
+_partial _ _ p _ = H.div ! A.class_ (fromString "categorylist") $
+    forM_ (categories p) ((H.div ! categoryClass) . H.toHtml)
 
 categoryClass :: H.Attribute
 categoryClass = A.class_ (fromString "chip")

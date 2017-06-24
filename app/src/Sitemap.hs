@@ -1,18 +1,17 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Sitemap(mkSitemap) where
 
-import qualified Data.Map          as Map
-import           Data.Monoid       ((<>))
-import           Data.Text
-import qualified Data.Text.Lazy    as TL
-import           Data.Time.Clock   (getCurrentTime)
-import           Data.Time.ISO8601 (formatISO8601)
+import qualified Data.Map         as Map
+import           Data.Monoid      ((<>))
+import qualified Data.Text        as T (pack)
+import qualified Data.Text.Lazy   as TL
+import           Internal.Helpers (getISOTime)
 import           Text.XML
 
 -- | Make a sitemap. Provide the server name and a list of paths as arguments.
 mkSitemap :: String -> [String] -> IO TL.Text
 mkSitemap server_name pages = do
-    time <- formatISO8601 <$> getCurrentTime
+    time <- getISOTime
     let pages' = (\xs->server_name++"/"++xs) <$> pages
         root_attr = Map.fromList [(makeName "xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")]
         root = Element (makeName "urlset") root_attr (Prelude.map (packageToNode time) pages')
@@ -38,10 +37,10 @@ makeNodeURL loc lastmod changefreq priority =
     ] where
         noAttr = Map.empty
         makeNodeValue :: String -> [Node]
-        makeNodeValue val = [NodeContent (pack val)]
+        makeNodeValue val = [NodeContent (T.pack val)]
 
 makeName :: String -> Name
 makeName s = Name
-  { nameLocalName = pack s
+  { nameLocalName = T.pack s
   , nameNamespace = Nothing
   , namePrefix = Nothing }

@@ -9,16 +9,17 @@ import           Text.Blaze.Html5            ((!))
 import qualified Text.Blaze.Html5            as H
 import qualified Text.Blaze.Html5.Attributes as A
 
+-- | Partial "KeywordList"
 data KeywordList = KeywordList
 
 instance Partial KeywordList where
-    extraRoutes = \_ -> []
-    partial = _partial
-    partialName = \_ -> "keywordlist"
+    extraRoutes _ = []
+    partial       = _partial
+    partialName _ = "keywordlist"
 
 _partial :: KeywordList -> FileDB -> Page -> Params -> H.Html
-_partial _ _ p _ = H.div ! A.class_ (fromString "keywordlist") $ do
-    forM_ (keywords p) (\t->H.div ! keywordClass $ H.toHtml t)
+_partial _ _ p _ = H.div ! A.class_ (fromString "keywordlist") $
+    forM_ (keywords p) ((H.div ! keywordClass) . H.toHtml)
 
 keywordClass :: H.Attribute
 keywordClass = A.class_ (fromString "chip")

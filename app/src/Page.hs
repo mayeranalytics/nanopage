@@ -6,9 +6,8 @@ import           Control.Monad.IO.Class (MonadIO)
 import qualified Data.Text.Lazy         as TL
 import qualified Web.Spock              as Sp
 -- nanopage imports
-import           FileDB                 as FileDB (PageInfo, makeContent,
-                                                   makePreview, mkPageInfo)
-import qualified Internal.FileDB        as FileDB
+import           FileDB                 (FileDB, Page, PageInfo, makeContent,
+                                         makePreview, mkPageInfo, slug)
 import           Internal.HtmlOps
 
 import           Debug.Trace            (trace)
@@ -41,4 +40,4 @@ routePreview :: FileDB.Page -> Sp.SpockM FileDB.FileDB () () ()
 routePreview p = Sp.get route action where
     action = renderPreview p
     slug = FileDB.slug p
-    route = (Sp.static $ TL.unpack slug ++ "/preview")
+    route = Sp.static (TL.unpack slug ++ "/preview")

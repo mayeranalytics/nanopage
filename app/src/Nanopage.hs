@@ -49,6 +49,7 @@ import           Page                                 (renderPage,
 import           Partials
 import           Sitemap
 
+runNanopage :: NanopageConfig -> IO ()
 runNanopage opts = do
     putStrLn (toString opts)
     setCurrentDirectory (contentDir opts)

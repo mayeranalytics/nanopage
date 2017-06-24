@@ -6,7 +6,6 @@ import           Control.Monad                 (forM_, when)
 import           Data.List                     (intercalate, nub, sort)
 import           Data.Monoid                   ((<>))
 import           Data.String.QQ
-import           Data.String.ToString
 import qualified Data.Text                     as T (Text, pack, unlines,
                                                      unpack)
 import qualified Data.Text.Lazy                as TL (Text, toStrict, unpack)
@@ -22,14 +21,13 @@ import           Internal.FileDB               (FileDB (..), Page (..), Params,
                                                 keywords, slug, tags, title)
 import           Internal.Partial
 
-import           Debug.Trace                   (traceShowId)
-
+-- | Partial "AdminBlock"
 data AdminBlock = AdminBlock
 
-instance Internal.Partial.Partial AdminBlock where
-    extraRoutes = \_ -> [route]
-    partial = _partial
-    partialName = \_ -> "adminblock"
+instance Partial AdminBlock where
+    extraRoutes _ = [route]
+    partial       = _partial
+    partialName _ = "adminblock"
 
 route :: Sp.SpockM FileDB () () ()
 route = Sp.get "admin/getpages" $ do
