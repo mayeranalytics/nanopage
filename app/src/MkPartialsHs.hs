@@ -6,7 +6,7 @@ import           Control.Monad     (forM_)
 import           Data.List         (intercalate)
 import           Data.Time.Clock   (getCurrentTime)
 import           Data.Time.ISO8601 (formatISO8601Millis)
-import           Nanopage
+import           Internal.Partial  (getNamesOfPartials)
 
 -- This executable generates the src/Partials.hs file. The exe should be run
 -- in the src directory.
