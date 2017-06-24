@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Partials.KeywordList (KeywordList(..)) where
 
 import           Control.Monad               (forM_)
@@ -13,6 +14,7 @@ data KeywordList = KeywordList
 instance Partial KeywordList where
     extraRoutes = \_ -> []
     partial = _partial
+    partialName = \_ -> "keywordlist"
 
 _partial :: KeywordList -> FileDB -> Page -> Params -> H.Html
 _partial _ _ p _ = H.div ! A.class_ (fromString "keywordlist") $ do
