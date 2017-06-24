@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Partials.CategoryList (CategoryList(..)) where
 
 import           Control.Monad               (forM_)
@@ -14,6 +15,7 @@ data CategoryList = CategoryList
 instance Partial CategoryList where
     extraRoutes = \_ -> []
     partial = _partial
+    partialName = \_ -> "categorylist"
 
 _partial :: CategoryList -> FileDB -> Page -> Params -> H.Html
 _partial _ _ p _ = H.div ! A.class_ (fromString "categorylist") $ do

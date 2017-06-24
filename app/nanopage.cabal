@@ -39,12 +39,12 @@ executable mkPartialsHs
                      , directory
                      , time
                      , iso8601-time
-    other-modules:     Internal.FileDB
+    other-modules:     Nanopage
+                     , Internal.FileDB
                      , Internal.Helpers
                      , Internal.HtmlOps
                      , Internal.Partial
                      , Internal.SpockExt
-                     , PartialsTH
 
 
 executable nanopage
@@ -82,7 +82,8 @@ executable nanopage
                      , directory
                      , open-browser
                      , template-haskell
-    other-modules:     Page
+    other-modules:     Nanopage
+                     , Page
                      , FileDB
                      , Sitemap
                      , Partials.AdminBlock
@@ -96,4 +97,3 @@ executable nanopage
                      , Internal.SpockExt
                      , Internal.Partial
                      , Partials
-                     , PartialsTH

@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Partials.TagList (TagList(..)) where
 
 import           Control.Monad               (forM_)
@@ -14,6 +15,7 @@ data TagList = TagList
 instance Partial TagList where
     extraRoutes = \_ -> []
     partial = _partial
+    partialName = \_ -> "taglist"
 
 _partial :: TagList -> FileDB -> Page -> Params -> H.Html
 _partial _ _ p _ = H.div ! A.class_ (fromString "taglist") $ do

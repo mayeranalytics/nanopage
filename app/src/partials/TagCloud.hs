@@ -33,6 +33,7 @@ data TagCloud = TagCloud
 instance Partial TagCloud where
     extraRoutes = \_ -> [route]
     partial = _partial
+    partialName = \_ -> "tagcloud"
 
 route :: Sp.SpockM FileDB () () ()
 route = Sp.get "pages" $ do

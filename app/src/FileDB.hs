@@ -1,5 +1,5 @@
 {-# LANGUAGE OverloadedStrings #-}
-
+{-# LANGUAGE TemplateHaskell   #-}
 module FileDB (FileDB(..), Page(..), Mode(..), TemplateName, Params, listPages,
     makePage, makePreview, getPagesNoContent, makePages, getStaticDirRoutes,
     defaultFileDB, getTemplate, title, slug, tags, keywords, categories,
@@ -47,11 +47,7 @@ import           Internal.HtmlOps                     (markdownToHtmlString,
                                                        transformHtml)
 import           Internal.Partial
 -- partials
-import           Partials.AdminBlock
-import           Partials.CategoryList
-import           Partials.KeywordList
-import           Partials.TagCloud
-import           Partials.TagList
+import           Partials
 
 makePreview :: Page -> Params -> FileDB -> IO TL.Text
 makePreview p params db = return $ Internal.FileDB.mdPreview p
@@ -60,30 +56,21 @@ makePreview p params db = return $ Internal.FileDB.mdPreview p
 makeContent :: Page -> Params -> FileDB -> IO TL.Text
 makeContent page params db = do
     let t = fromMaybe (error "INTERNAL ERROR") (template page)
-    -- 5. instantiate the partials (if any)
-    let tagListInstance =      renderHtml $ partial TagList      db page params :: TL.Text
-    let categoryListInstance = renderHtml $ partial CategoryList db page params :: TL.Text
-    let keywordListInstance =  renderHtml $ partial KeywordList  db page params :: TL.Text
-    let adminBLockInstance =   renderHtml $ partial AdminBlock   db page params :: TL.Text
-    let tagCloudInstance =     renderHtml $ partial TagCloud     db page params :: TL.Text
+    -- 5. instantiate the partials
+    let partialInstances = map f $(getPartials) where
+        f (n, p) = (n, renderHtml (p db page params))
     -- 6. Treat the htmlContent as a template and let  Mustache render it with
     --    the standard pairs
     let cfg = config page
-    let default_pairs = [
+    let config_pairs = [
             "title"       .= _title cfg,
             "keywords"    .= keywordsString cfg,
             "description" .= descriptionString cfg,
             "author"      .= authorString cfg
             ] :: [Y.Pair]
-    let partials_pairs = [
-            "taglist"      .= tagListInstance,
-            "categorylist" .= categoryListInstance,
-            "keywordlist"  .= keywordListInstance,
-            "tagcloud"     .= tagCloudInstance
-            ] :: [Y.Pair]
-    let admin_pairs | FileDB.mode db == FileDB.ADMIN = ["adminblock" .= adminBLockInstance] :: [Y.Pair]
-                    | otherwise                      = []
-    let other_pairs = default_pairs ++ partials_pairs ++ admin_pairs
+    let partials_pairs = map (\(n,c)->n .= c) partialInstances' where
+        partialInstances' = filter (\(n,c)->FileDB.mode db == FileDB.ADMIN || n /= "adminblock") partialInstances
+    let other_pairs = config_pairs ++ partials_pairs
     let htmlContentsRendered = other_pairs `renderWithTemplate` mdContent page
     -- 7. Now render the template, using all pairs. In particular, plug in the
     --    {{content}}

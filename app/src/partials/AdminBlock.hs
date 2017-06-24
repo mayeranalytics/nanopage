@@ -28,6 +28,7 @@ data AdminBlock = AdminBlock
 instance Internal.Partial.Partial AdminBlock where
     extraRoutes = \_ -> [route]
     partial = _partial
+    partialName = \_ -> "adminblock"
 
 route :: Sp.SpockM FileDB () () ()
 route = Sp.get "admin/getpages" $ do

@@ -37,12 +37,11 @@ import           FileDB                               (FileDB, Mode (..),
                                                        getStaticDirRoutes,
                                                        isHiddenPage, makePages)
 import qualified FileDB
-import qualified Internal.Partial                     as Partial
+import           Nanopage
 import           Page                                 (renderPage,
                                                        renderPreview, routePage,
                                                        routePreview)
 import           Partials
-import           PartialsTH                           (getRoutesOfPartials)
 import           Sitemap
 
 helpHeader :: String
@@ -69,8 +68,8 @@ instance Show Opts where
 defaultPortNumber = 3000 :: Int
 defaultServerName = "localhost" :: String
 
-extraRoutes :: [Sp.SpockM FileDB () () ()]
-extraRoutes = $(getRoutesOfPartials)
+myExtraRoutes :: [Sp.SpockM FileDB () () ()]
+myExtraRoutes = $(getRoutesOfPartials)
 
 isAdmin :: Opts -> Bool
 isAdmin = (ADMIN ==) . mode
@@ -157,7 +156,7 @@ app opts = do
     Sp.get "sitemap.xml" $ (Sp.xml . T.encodeUtf8 . TL.toStrict) sitemap
     forM_ pages' Page.routePage
     forM_ pages' Page.routePreview
-    sequence_ extraRoutes
+    sequence_ myExtraRoutes
     unless (isAdmin opts) $ do
         staticDirRoutes <- Sp.runQuery getStaticDirRoutes
         liftIO $ putStrLn "Files:"
