@@ -1,13 +1,13 @@
 name:                Demo
 version:             0.0.1.0
--- synopsis:
--- description:
-homepage:            https://github.com/githubuser/Demo#readme
-license:             BSD3
+synopsis:            nanoPage demo app
+description:         This is the nanoPage demo app. See http://nanopage.li.
+homepage:            https://github.com/mayeranalytics/nanopage
+license:             MIT
 license-file:        LICENSE
-author:              Author name here
-maintainer:          example@example.com
-copyright:           2017 Author name here
+author:              Markus Mayer
+maintainer:          admin@mayeranalytics.com
+copyright:           Mayer Analytics
 category:            Web
 build-type:          Simple
 extra-source-files:  README.md
