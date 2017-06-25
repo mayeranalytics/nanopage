@@ -6,7 +6,7 @@ homepage:            https://github.com/mayeranalytics/nanopage
 license:             MIT
 license-file:        LICENSE
 author:              Markus Mayer
-maintainer:          mmayer@mayeranalytics.com
+maintainer:          admin@mayeranalytics.com
 copyright:           Mayer Analytics
 category:            Web
 build-type:          Simple
