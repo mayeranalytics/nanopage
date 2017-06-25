@@ -15,6 +15,8 @@ import qualified Web.Spock             as Sp
 -- nanopage imports
 import           Internal.FileDB       (FileDB, Page, Params)
 
+type RouteType = [Sp.SpockM FileDB () () ()]
+
 class Partial a where
 
     -- | A list of extra routes that should be added
@@ -28,8 +30,8 @@ class Partial a where
     partialName :: a -> T.Text
 
 
--- | Returns a list of .hs files in ./Partials and ./src/Partials.
--- Missing directories are ignored.
+-- | Return a list of .hs files in ./Partials and ./src/Partials.
+-- Missing directories are silently ignored.
 partialList :: IO [String]
 partialList = do
      cwd <- getCurrentDirectory
@@ -42,20 +44,24 @@ partialList = do
                  regularHsFile = fileType ==? RegularFile &&? extension ==? ".hs"
                  notHidden = (\n->head n /= '.') `liftM` fileName
 
+-- | Get the list of partials as returned by partialList. The result is a TH expression of type @[String]@.
 getNamesOfPartials :: Q Exp
 getNamesOfPartials = fmap (ListE . map (LitE . StringL)) fs
     where fs = runIO partialList
 
+-- | The result is a TH expression of type @RouteType@.
 getRouteOfPartial :: String -> Q Exp
 getRouteOfPartial name = AppE <$> [e| extraRoutes |] <*> (conE $ mkName name)
 
+-- | The result is a TH expression of type @[RouteType]@.
 getRoutesOfPartials :: Q Exp
 getRoutesOfPartials = AppE <$> [e| concat |] <*> rss where
     rss = ListE <$> ((runIO partialList) >>= mapM getRouteOfPartial)
 
--- | Return a list of Partial.partial
+-- | Return a list of Partial.partial.
+-- The result is a TH expression of type @[a -> FileDB -> Page -> Params -> H.Html]@.
 getPartials :: Q Exp
 getPartials = ListE <$> ((runIO partialList) >>= mapM getTuple) where
+    getTuple name = tupE [getPartialName name, getPartial name]
     getPartial name = AppE <$> [e| partial |] <*> (conE $ mkName name)
     getPartialName name = AppE <$> [e| partialName |] <*> (conE $ mkName name)
-    getTuple name = tupE [getPartialName name, getPartial name]

@@ -12,7 +12,6 @@ import qualified Data.Aeson                    as A
 import qualified Data.ByteString               as BS
 import qualified Data.ByteString.Char8         as BS8
 import qualified Data.ByteString.Lazy          as BL
-import           Data.FileEmbed                (embedDir)
 import           Data.List                     (find, nub)
 import           Data.Maybe                    (fromMaybe)
 import           Data.Monoid                   ((<>))
@@ -37,6 +36,7 @@ import qualified Text.Blaze.Html5              as H
 import qualified Text.Mustache                 as M
 import qualified Web.Spock                     as Sp
 -- nanpage imports
+import           Internal.EmbedDir             (embedDir)
 import           Internal.Helpers
 import           Internal.HtmlOps              (getFirstImage,
                                                 markdownToHtmlString,
@@ -98,9 +98,9 @@ embedAllFiles = return $
     ++ static where
         prefixWith' p (p',c) = (joinPath [p,p'], c)
         prefixWith p = map (prefixWith' p)
-        pages     = $(embedDir "../content/pages")
-        templates = $(embedDir "../content/templates")
-        static    = $(embedDir "../content/static")
+        pages     = $(embedDir "content/pages")
+        templates = $(embedDir "content/templates")
+        static    = $(embedDir "content/static")
 
 -- | Normalize a directory name, i.e. replace double // by / etc.
 normalizePath :: FilePath -> FilePath

@@ -1,0 +1,7 @@
+flags: {}
+packages:
+  - nanopage/
+  - Demo/
+resolver: lts-8.20
+extra-deps:
+    - nanopage-0.0.1.0

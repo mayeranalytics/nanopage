@@ -11,15 +11,19 @@ admin:
 
 bin/nanopage:
 	mkdir -p bin
-	make -C app
+	make -C nanopage
 
 ghcid:
-	make -C app ghcid
+	make -C nanopage ghcid
 
 compress:
 	upx -9 bin/nanopage
 
 clean:
-	make -C app clean
+	make -C nanopage clean
 
-.PHONY: clean run admin compress bin/nanopage
+.PHONY: clean run admin compress bin/nanopage Demo
+
+Demo:
+	APPDIR=$$PWD/$@ stack  --local-bin-path $@/bin/ install
+	strip Demo/bin/*
