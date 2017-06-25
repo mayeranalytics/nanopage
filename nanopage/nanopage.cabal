@@ -1,8 +1,8 @@
 name:                nanopage
-version:             0.1.0.0
+version:             0.0.1.0
 synopsis:            nanoPage is a minimal flat file CMS based on the Spock framework.
 -- description:
-homepage:            https://github.com/githubuser/nanopage#readme
+homepage:            https://github.com/mayeranalytics/nanopage
 license:             MIT
 license-file:        LICENSE
 author:              Markus Mayer
@@ -35,7 +35,7 @@ executable mkPartialsHs
                      , yaml
                      , file-embed
                      , aeson
-                     , template-haskell
+                     , template-haskell >= 2.7
                      , directory
                      , time
                      , iso8601-time
@@ -45,11 +45,10 @@ executable mkPartialsHs
                      , Internal.HtmlOps
                      , Internal.Partial
                      , Internal.SpockExt
+                     , Internal.EmbedDir
 
-
-executable nanopage
+library
     hs-source-dirs:    src, src/Partials
-    main-is:           Main.hs
     default-language:  Haskell2010
     ghc-options:       -O2 -j -threaded
     build-depends:     base >= 4.7 && < 5
@@ -81,9 +80,9 @@ executable nanopage
                      , optparse-applicative
                      , directory
                      , open-browser
-                     , template-haskell
+                     , template-haskell >= 2.7
                      , tostring
-    other-modules:     Nanopage
+    exposed-modules:   Nanopage
                      , Config
                      , CliOpts
                      , Page
@@ -94,9 +93,10 @@ executable nanopage
                      , Partials.KeywordList
                      , Partials.TagCloud
                      , Partials.TagList
-                     , Internal.FileDB
+                     , Partials
+    other-modules:     Internal.FileDB
                      , Internal.Helpers
                      , Internal.HtmlOps
                      , Internal.SpockExt
                      , Internal.Partial
-                     , Partials
+                     , Internal.EmbedDir
