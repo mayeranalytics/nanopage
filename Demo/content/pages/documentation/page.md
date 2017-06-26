@@ -179,7 +179,7 @@ Todo: Details
 
 <a name="cms-partials"></a>
 ### Partials 
-A partial  provides a feature. They are HTML snippets can provide potentially dynamic content. Partials are included in the markdown page via the Mustache syntax `{{partial-name}}` and `{{{partial-name}}}`. See the [Partials](#internals-partials) section below for more details. For example, in order to include the author name, as defined in `config.yaml`, just write in the markdown file.
+A partial  provides a feature. They are HTML snippets can provide potentially dynamic content. Partials are included in the markdown page via the Mustache syntax `partial-name` and `partial-name`. See the [Partials](#internals-partials) section below for more details. For example, in order to include the author name, as defined in `config.yaml`, just write in the markdown file.
 
 ```html
 {{{author}}}
