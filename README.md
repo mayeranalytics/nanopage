@@ -12,7 +12,7 @@ deploy and easy to secure. A demo is running on [http://nanopage.li](http://nano
 can be found on [github](https://github.com/mayeranalytics/nanopage). 
 A demo app is also on [github](https://github.com/mayeranalytics/nanopage-demo).
 
-Documentation can be found on [http://nanopage.li/documentation](http://nanopage.li/documentation).
+Documentation can be found [here](documentation.md) and also on the demo site at [http://nanopage.li/documentation](http://nanopage.li/documentation).
 
 *nanoPage* development is currently in the *alpha* stage. Critique, suggestions, and
 contributions, are most welcome.
