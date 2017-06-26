@@ -25,7 +25,7 @@ import           Internal.FileDB               (FileDB (..), Page (..),
                                                 title)
 import           Internal.Partial
 
--- | Partial "TagCloud"
+-- | Partial "TagCloud" displays
 data TagCloud = TagCloud
 
 instance Partial TagCloud where
@@ -67,8 +67,6 @@ _partial _ db p _ = do
 unique :: Eq a => [a] -> [a]
 unique = Prelude.reverse . nub . Prelude.reverse
 
-flatten = intercalate []
-
 mkButton :: TL.Text -> TL.Text -> H.Html
 mkButton typ name = H.a ! A.class_ "waves-effect waves-light btn btn-small" !
     A.href (fromString js) $ nameEl where
@@ -82,7 +80,7 @@ allTagButtons :: [Page] -> H.Html
 allTagButtons ps = do
     mkButton "tags" "*"
     forM_ ts (mkButton "tags") where
-    ts' = unique $ flatten $ map tags ps :: [TL.Text]
+    ts' = unique $ concatenate $ map tags ps :: [TL.Text]
     ts = sort ts' :: [TL.Text]
 
 javascript :: T.Text

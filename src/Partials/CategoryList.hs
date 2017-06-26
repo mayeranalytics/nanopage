@@ -10,7 +10,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 import           Internal.FileDB
 import           Internal.Partial
 
--- | Partial "CategoryList"
+-- | Partial "CategoryList" displays a sequence of <div class="chip">, one for each category.
 data CategoryList = CategoryList
 
 instance Partial CategoryList where

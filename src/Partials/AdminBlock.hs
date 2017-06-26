@@ -112,8 +112,6 @@ liClass = A.class_ (fromString "chip")
 unique :: Eq a => [a] -> [a]
 unique = Prelude.reverse . nub . Prelude.reverse
 
-flatten = intercalate []
-
 mkButton :: TL.Text -> TL.Text -> H.Html
 mkButton typ name = H.a ! A.class_ (fromString "waves-effect waves-light btn btn-small") !
     A.href (fromString js) $ H.toHtml name where
@@ -123,7 +121,7 @@ mkButton typ name = H.a ! A.class_ (fromString "waves-effect waves-light btn btn
 
 listAll :: TL.Text -> (Page -> [TL.Text]) -> [Page] -> H.Html
 listAll name f ps = forM_ ts (mkButton name) where
-    ts' = unique $ flatten $ map f ps :: [TL.Text]
+    ts' = unique $ concatenate $ map f ps :: [TL.Text]
     ts = sort ts' :: [TL.Text]
 
 

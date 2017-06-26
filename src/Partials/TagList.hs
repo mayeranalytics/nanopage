@@ -10,7 +10,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 
 import           Internal.Partial
 
--- | Partial "TagList"
+-- | Partial "TagList" displays a sequence of <div class="chip">, one for each tag.
 data TagList = TagList
 
 instance Partial TagList where
