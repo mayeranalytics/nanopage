@@ -12,12 +12,12 @@ A demo is running on [http://nanopage.li](http://nanopage.li).
 
 ### Motivation
 - easy to extend
-- avoid heavy frameworks
 - lightweight: Self-contained executable including all the static content
 
 ### Use-cases
 - blogs
-- static microsites
+- mostly static microsites
+- single-page or "few-page" sites based on the [Haskell Spock](htp://spock.li) framework
 - embedded devices
 
 ### Features
