@@ -58,41 +58,7 @@ When it comes to content editing in a CMS there are effectively three choices. S
 <a name="CMS"></a>
 ## Getting Started
 
-#### Download
-
-We'll assume you have the Haskell Tool Stack installed on your system. If not, follow the instructions on [haskellstack.org](https://docs.haskellstack.org/en/stable/README/).
-
-First, download *nanoPage* from the repository on [github](https://github.com/mayeranalytics/nanoPage/).
-
-```bash
-cd some/good/location
-git clone git@github.com:mayeranalytics/nanoPage.git
-```
-
-#### Build
-
-Next build the demo app 
-
-```bash
-make Demo	# or
-APPDIR=$PWD/Demo stack --local-bin-path Demo/bin/ install
-```
-
-The environment variable `APPDIR` tells the compiler where the content directory can be found (absolute paths needed!). The stack option `—local-bin-path` tells the linker to install the executable in the standard location `bin/` underneath the `APPDIR`. Compilation of the *nanoPage* source code may take a minute or two, and when building it the *first time* Stack will also download and install all required packages which will take additional time. Normally you have to compile *nanoPage* only once to be able to run it in admin mode.
-
-#### Run the demo app in admin mode
-
-In admin mode files are served from the local `content/` folder.
-
-```bash
-Demo/bin/demo-app -m ADMIN -C Demo/content
-```
-
-The app will automatically open the browser for you and navigate to `http://localhost:3000`. See [Running the Server](#running-the-server) below for more details.
-
-#### Deploy the app
-
-The executable is fully self contained, so all there is to do is copy it to the server and run it.
+The best way to get started is by building and running the [nanopage-demo](https://github.com/mayeranalytics/nanopage-demo.git) app.
 
 ## The CMS
 
@@ -243,6 +209,27 @@ cd Demo/contents; ../bin/nanopage -m ADMIN   # or
 Demo/bin/nanopage -m ADMIN -C Demo/contents
 ```
 
+## Creating a simple App from scratch
+
+The demo app is an easy way to start, just download the [nanopage-demo](https://github.com/mayeranalytics/nanopage-demo.git) repository and modify it. However, if you want to start from scratch, here's how:
+
+In the folder of choice, clone [nanopage](https://github.com/mayeranalytics/nanopage.git) as a submodule and create the `content/` folder with subfolders `content/pages/`, `content/static/` and `content/templates/`.
+
+```bash
+cd your/folder
+git submodule add git@github.com:mayeranalytics/nanopage.git
+mkdir -p content/pages content/static content/templates
+```
+
+Next, 
+
+- create at least one template
+- put css styles, javascript files, and other static assets into the `static/`folder
+- in `content/pages/` create at least the landing page `home/template-name.md`
+
+Note: Keep the `content/` folder as tidy and small as possible because all files in it will be compiled into the executable!
+
+Todo.
 
 ## Internals
 
