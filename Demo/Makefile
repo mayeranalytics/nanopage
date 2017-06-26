@@ -1,12 +1,12 @@
 EXE=demo-app
 
+bin/$(EXE): Demo
+
 run: bin/$(EXE)
 	$<
 
 admin: bin/$(EXE)
 	$< -m ADMIN -C content
-
-bin/$(EXE): Demo
 
 Demo:
 	cd ..;\
