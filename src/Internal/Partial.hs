@@ -1,7 +1,9 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE ExistentialQuantification #-}
+{-# LANGUAGE TemplateHaskell           #-}
 module Internal.Partial (
-    Partial, extraRoutes, partial, partialName,
-    getNamesOfPartials, getRoutesOfPartials, getPartials
+    Partial_, Partial(..),
+    extraRoutes, extraRoutes', partial, partialName, partialName',
+    getPartials
 ) where
 
 import           Control.Monad         (liftM)
@@ -19,7 +21,7 @@ import           Internal.FileDB       (FileDB, Page, Params)
 
 type RouteType = [Sp.SpockM FileDB () () ()]
 
-class Partial a where
+class Partial_ a where
 
     -- | A list of extra routes that should be added
     extraRoutes :: a -> [Sp.SpockM FileDB () () ()]
@@ -31,6 +33,12 @@ class Partial a where
     -- partial in mustache patterns {{}}, {{{}}}
     partialName :: a -> T.Text
 
+data Partial = forall a. Partial_ a => Partial a
+
+--extraRoutes' :: Partial a -> [Sp.SpockM FileDB () () ()]
+extraRoutes' (Partial p) = extraRoutes p
+
+partialName' (Partial p) = partialName p
 
 -- | Return a list of .hs files in ./Partials and ./src/Partials.
 -- Missing directories are silently ignored.
@@ -49,6 +57,17 @@ partialList = do
                  regularHsFile = fileType ==? RegularFile &&? extension ==? ".hs"
                  notHidden = (\n->head n /= '.') `liftM` fileName
 
+con name = AppE <$> [e| Partial |] <*> conE (mkName name)
+
+-- | Return a list of Partial.
+-- The return type is [Partial]
+getPartials :: Q Exp
+getPartials = ListE <$> (runIO partialList >>= mapM mkPartial)
+
+mkPartial :: String -> Q Exp
+mkPartial name = AppE <$> [e| Partial |] <*> conE (mkName name)
+
+{-
 -- | Get the list of partials as returned by partialList. The result is a TH expression of type @[String]@.
 getNamesOfPartials :: Q Exp
 getNamesOfPartials = fmap (ListE . map (LitE . StringL)) fs
@@ -70,3 +89,4 @@ getPartials = ListE <$> (runIO partialList >>= mapM getTuple) where
     getTuple name = tupE [getPartialName name, getPartial name]
     getPartial name = AppE <$> [e| partial |] <*> conE (mkName name)
     getPartialName name = AppE <$> [e| partialName |] <*> conE (mkName name)
+-}

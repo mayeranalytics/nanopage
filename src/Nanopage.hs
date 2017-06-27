@@ -2,8 +2,7 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module Nanopage (
     -- Internal.Partial
-    Partial, extraRoutes, partial, partialName,
-    getNamesOfPartials, getRoutesOfPartials, getPartials,
+    Partial, extraRoutes, partial, partialName, getPartials,
     -- Page
     renderPage, renderPreview, routePage, routePreview,
     -- FileDB
@@ -17,6 +16,7 @@ module Nanopage (
 
 import           Control.Monad                        (forM_, unless, when)
 import           Control.Monad.IO.Class               (liftIO)
+import           Data.List                            (concat)
 import           Data.Monoid                          ((<>))
 import           Data.String.ToString
 import qualified Data.Text                            as T
@@ -112,7 +112,7 @@ app opts = do
    Sp.get "sitemap.xml" $ (Sp.xml . T.encodeUtf8 . TL.toStrict) sitemap
    forM_ pages' routePage
    forM_ pages' routePreview
-   sequence_ $(getRoutesOfPartials)
+   sequence_ $ concat $ map extraRoutes' $(getPartials)
    unless (isAdmin opts) $ do
        staticDirRoutes <- Sp.runQuery getStaticDirRoutes
        liftIO $ putStrLn "Files:"

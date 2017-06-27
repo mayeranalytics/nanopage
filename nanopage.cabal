@@ -39,6 +39,8 @@ executable mkPartialsHs
                      , directory
                      , time
                      , iso8601-time
+                     , string-qq
+                     , blaze-markup
     other-modules:     Nanopage
                      , Internal.FileDB
                      , Internal.Helpers
@@ -46,6 +48,12 @@ executable mkPartialsHs
                      , Internal.Partial
                      , Internal.SpockExt
                      , Internal.EmbedDir
+                     , Partials
+                     , Partials.AdminBlock
+                     , Partials.CategoryList
+                     , Partials.KeywordList
+                     , Partials.TagCloud
+                     , Partials.TagList
 
 library
     hs-source-dirs:    src, src/Partials

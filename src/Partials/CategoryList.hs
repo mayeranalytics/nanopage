@@ -13,7 +13,7 @@ import           Internal.Partial
 -- | Partial "CategoryList" displays a sequence of <div class="chip">, one for each category.
 data CategoryList = CategoryList
 
-instance Partial CategoryList where
+instance Partial_ CategoryList where
     extraRoutes _ = []
     partial       = _partial
     partialName _ = "categorylist"

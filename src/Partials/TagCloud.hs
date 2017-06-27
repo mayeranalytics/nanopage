@@ -28,7 +28,7 @@ import           Internal.Partial
 -- | Partial "TagCloud" displays
 data TagCloud = TagCloud
 
-instance Partial TagCloud where
+instance Partial_ TagCloud where
     extraRoutes _ = [route]
     partial       = _partial
     partialName _ = "tagcloud"

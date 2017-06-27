@@ -12,7 +12,7 @@ import qualified Text.Blaze.Html5.Attributes as A
 -- | Partial "KeywordList" displays a sequence of <div class="chip">, one for each keyword.
 data KeywordList = KeywordList
 
-instance Partial KeywordList where
+instance Partial_ KeywordList where
     extraRoutes _ = []
     partial       = _partial
     partialName _ = "keywordlist"

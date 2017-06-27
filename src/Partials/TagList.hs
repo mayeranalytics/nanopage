@@ -13,7 +13,7 @@ import           Internal.Partial
 -- | Partial "TagList" displays a sequence of <div class="chip">, one for each tag.
 data TagList = TagList
 
-instance Partial TagList where
+instance Partial_ TagList where
     extraRoutes _ = []
     partial       = _partial
     partialName _ = "taglist"

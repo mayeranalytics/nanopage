@@ -24,7 +24,7 @@ import           Internal.Partial
 -- | Partial "AdminBlock"
 data AdminBlock = AdminBlock
 
-instance Partial AdminBlock where
+instance Partial_ AdminBlock where
     extraRoutes _ = [route]
     partial       = _partial
     partialName _ = "adminblock"

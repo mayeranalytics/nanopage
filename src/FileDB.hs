@@ -48,17 +48,21 @@ import           Internal.HtmlOps                     (markdownToHtmlString,
 import           Internal.Partial
 -- partials
 import           Partials
+import Partials.AdminBlock
 
 makePreview :: Page -> Params -> FileDB -> IO TL.Text
 makePreview p params db = return $ Internal.FileDB.mdPreview p
+
+allPartials :: [Partial]
+allPartials = $(getPartials)
 
 -- |Turn a page created by makePage into content.
 makeContent :: Page -> Params -> FileDB -> IO TL.Text
 makeContent page params db = do
     let t = fromMaybe (error "INTERNAL ERROR") (template page)
     -- 5. instantiate the partials
-    let partialInstances = map f $(getPartials) where
-        f (n, p) = (n, renderHtml (p db page params))
+    let partialInstances = map f allPartials where
+        f (Partial p) = renderHtml $ (partial p) db page params
     -- 6. Treat the htmlContent as a template and let  Mustache render it with
     --    the standard pairs
     let cfg = config page
@@ -68,8 +72,9 @@ makeContent page params db = do
             "description" .= descriptionString cfg,
             "author"      .= authorString cfg
             ] :: [Y.Pair]
-    let partials_pairs = map (\(n,c)->n .= c) partialInstances' where
-        partialInstances' = filter (\(n,c)->FileDB.mode db == FileDB.ADMIN || n /= "adminblock") partialInstances
+    let partials_pairs = map mkPair $ filter filtF allPartials where
+        mkPair (Partial p) = (TL.toStrict $ renderHtml $ (partial p) db page params) .= (partialName p)
+        filtF (Partial p) = FileDB.mode db == FileDB.ADMIN || (partialName p) /= "adminblock"
     let other_pairs = config_pairs ++ partials_pairs
     let htmlContentsRendered = other_pairs `renderWithTemplate` mdContent page
     -- 7. Now render the template, using all pairs. In particular, plug in the
