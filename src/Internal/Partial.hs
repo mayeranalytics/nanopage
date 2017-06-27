@@ -5,9 +5,11 @@ module Internal.Partial (
 ) where
 
 import           Control.Monad         (liftM)
+import           Data.Maybe            (fromMaybe)
 import qualified Data.Text             as T
 import           Language.Haskell.TH
 import           System.Directory      (doesDirectoryExist, getCurrentDirectory)
+import           System.Environment    (getEnvironment)
 import           System.FilePath.Find
 import           System.FilePath.Posix (joinPath, takeBaseName)
 import qualified Text.Blaze.Html5      as H
@@ -35,7 +37,10 @@ class Partial a where
 partialList :: IO [String]
 partialList = do
      cwd <- getCurrentDirectory
-     fs1 <- findFiles' (joinPath [cwd, "Partials"])
+     partialsDir <- lookup "PARTIALSDIR" `liftM` getEnvironment
+     fs1 <- case partialsDir of
+         Just dir -> findFiles' dir
+         Nothing  -> return []
      fs2 <- findFiles' (joinPath [cwd, "src", "Partials"] )
      return $ takeBaseName <$> (fs1 ++ fs2) where
          findFiles' fp = do
@@ -51,17 +56,17 @@ getNamesOfPartials = fmap (ListE . map (LitE . StringL)) fs
 
 -- | The result is a TH expression of type @RouteType@.
 getRouteOfPartial :: String -> Q Exp
-getRouteOfPartial name = AppE <$> [e| extraRoutes |] <*> (conE $ mkName name)
+getRouteOfPartial name = AppE <$> [e| extraRoutes |] <*> conE (mkName name)
 
 -- | The result is a TH expression of type @[RouteType]@.
 getRoutesOfPartials :: Q Exp
 getRoutesOfPartials = AppE <$> [e| concat |] <*> rss where
-    rss = ListE <$> ((runIO partialList) >>= mapM getRouteOfPartial)
+    rss = ListE <$> (runIO partialList >>= mapM getRouteOfPartial)
 
 -- | Return a list of Partial.partial.
 -- The result is a TH expression of type @[a -> FileDB -> Page -> Params -> H.Html]@.
 getPartials :: Q Exp
-getPartials = ListE <$> ((runIO partialList) >>= mapM getTuple) where
+getPartials = ListE <$> (runIO partialList >>= mapM getTuple) where
     getTuple name = tupE [getPartialName name, getPartial name]
-    getPartial name = AppE <$> [e| partial |] <*> (conE $ mkName name)
-    getPartialName name = AppE <$> [e| partialName |] <*> (conE $ mkName name)
+    getPartial name = AppE <$> [e| partial |] <*> conE (mkName name)
+    getPartialName name = AppE <$> [e| partialName |] <*> conE (mkName name)
