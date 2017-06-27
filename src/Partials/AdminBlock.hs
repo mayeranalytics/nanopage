@@ -121,7 +121,7 @@ mkButton typ name = H.a ! A.class_ (fromString "waves-effect waves-light btn btn
 
 listAll :: TL.Text -> (Page -> [TL.Text]) -> [Page] -> H.Html
 listAll name f ps = forM_ ts (mkButton name) where
-    ts' = unique $ concatenate $ map f ps :: [TL.Text]
+    ts' = unique $ concat $ map f ps :: [TL.Text]
     ts = sort ts' :: [TL.Text]
 
 

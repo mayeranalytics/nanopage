@@ -80,7 +80,7 @@ allTagButtons :: [Page] -> H.Html
 allTagButtons ps = do
     mkButton "tags" "*"
     forM_ ts (mkButton "tags") where
-    ts' = unique $ concatenate $ map tags ps :: [TL.Text]
+    ts' = unique $ concat $ map tags ps :: [TL.Text]
     ts = sort ts' :: [TL.Text]
 
 javascript :: T.Text
