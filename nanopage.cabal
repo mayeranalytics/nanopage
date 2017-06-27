@@ -86,6 +86,7 @@ library
                      , Config
                      , CliOpts
                      , Page
+                     , Partial
                      , FileDB
                      , Sitemap
                      , Partials.AdminBlock
