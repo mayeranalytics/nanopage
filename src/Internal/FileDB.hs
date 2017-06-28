@@ -162,18 +162,17 @@ getTemplate tname db = case e_m of
         Left err -> error "getTemplate: compileMustacheText error"
         Right m  -> m
         where
-            pname = M.PName $ T.pack tname
-            content' = readFile db $ joinPath [templatesDir db, tname]
+            e_m = M.compileMustacheText (M.PName $ T.pack tname) content
             content = TL.fromStrict $ T.decodeUtf8 content'
-            e_m = M.compileMustacheText pname content
+            content' = readFile db $ joinPath [templatesDir db, tname]
 
+-- | Render text @t@ using key/value @pairs@
 renderWithTemplate :: [(T.Text, A.Value)] -> TL.Text -> TL.Text
 renderWithTemplate pairs t = case e_m of
-    Left err -> error "renderWithTemplate: compileMustacheText error"
+    Left err -> error ("renderWithTemplate: compileMustacheText error: " ++ show err)
     Right m  -> M.renderMustache m (A.object pairs)
     where
-        pname = M.PName "content"
-        e_m = M.compileMustacheText pname t
+        e_m = M.compileMustacheText (M.PName "content") t
 
 {-------------------------------- PageConfig ----------------------------------}
 

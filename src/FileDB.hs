@@ -17,6 +17,7 @@ import qualified Data.ByteString.Lazy                 as BL
 import           Data.Maybe                           (fromMaybe)
 import           Data.Monoid                          ((<>))
 import qualified Data.Text                            as T
+import qualified Data.Text.IO as T
 import qualified Data.Text.Lazy                       as TL
 import           Data.Yaml                            ((.:), (.:?))
 import qualified Data.Yaml.Aeson                      as Y
@@ -53,18 +54,17 @@ import Partials.AdminBlock
 makePreview :: Page -> Params -> FileDB -> IO TL.Text
 makePreview p params db = return $ Internal.FileDB.mdPreview p
 
-allPartials :: [Partial]
-allPartials = $(getPartials)
-
 -- |Turn a page created by makePage into content.
 makeContent :: Page -> Params -> [Partial]-> FileDB -> IO TL.Text
 makeContent page params partials db = do
-    let t = fromMaybe (error "INTERNAL ERROR") (template page)
-    -- 5. instantiate the partials
-    let partialInstances = map f allPartials where
-        f p = renderHtml $ (partialRender p) db page params
-    -- 6. Treat the htmlContent as a template and let  Mustache render it with
-    --    the standard pairs
+    -- Note this: The Mustache template plugging happens here. Mustache works with
+    -- key/value pairs. These pairs are built up, here. The {{content}} pattern
+    -- itself has to be Mustache interpolated, so there's a nested application
+    -- of Mustache patterns.
+    let t = fromMaybe (error "INTERNAL ERROR: No template found.") (template page)
+    -- 5. get all the partials
+    let allPartials = $(getPartials) ++ partials
+    -- 6. Treat the htmlContent as a template and let  Mustache render it with the standard pairs
     let cfg = config page
     let config_pairs = [
             "title"       .= _title cfg,
@@ -72,17 +72,12 @@ makeContent page params partials db = do
             "description" .= descriptionString cfg,
             "author"      .= authorString cfg
             ] :: [Y.Pair]
-    let partials_pairs = map mkPair $ partials ++ (filter filtF allPartials) where
-        mkPair p = (TL.toStrict $ renderHtml $ (partialRender p) db page params) .= (partialName p)
-        filtF p = FileDB.mode db == FileDB.ADMIN || (partialName p) /= "adminblock"
-    let other_pairs = config_pairs ++ partials_pairs
-    let htmlContentsRendered = other_pairs `renderWithTemplate` mdContent page
+    let partials_pairs = map mkPair $ filter filtF allPartials where
+        mkPair p = (partialName p) .= (TL.toStrict $ renderHtml $ (partialRender p) db page params)
+        filtF p = FileDB.mode db == FileDB.ADMIN || partialName p /= "adminblock"
+    let htmlContentsRendered = (config_pairs ++ partials_pairs) `renderWithTemplate` mdContent page
     -- 7. Now render the template, using all pairs. In particular, plug in the
     --    {{content}}
-    let content_pairs = [
-            "content" .= htmlContentsRendered
-            ] :: [Y.Pair]
-    let yObjs = Y.object $ content_pairs ++ other_pairs
-    let content' = M.renderMustache t yObjs
-    -- 8. Update the records content and return
-    return content'
+    let content_pair = ["content" .= htmlContentsRendered] :: [Y.Pair]
+    let yObjs = Y.object (config_pairs ++ partials_pairs ++ content_pair)
+    return (M.renderMustache t yObjs)
