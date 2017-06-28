@@ -6,8 +6,8 @@ module Internal.Partial (
     getPartials
 ) where
 
-import           Control.Monad         (liftM)
-import           Data.Maybe            (fromMaybe)
+import           Data.Either           (either)
+import           Data.Either.Extra     (fromRight)
 import qualified Data.Text             as T
 import           Language.Haskell.TH
 import           System.Directory      (doesDirectoryExist, getCurrentDirectory)
@@ -18,6 +18,10 @@ import qualified Text.Blaze.Html5      as H
 import qualified Web.Spock             as Sp
 -- nanopage imports
 import           Internal.FileDB       (FileDB, Page, Params)
+
+
+import           Debug.Trace           (trace)
+tr' xs a = trace (xs ++ show a) a
 
 type RouteType = [Sp.SpockM FileDB () () ()]
 
@@ -49,24 +53,28 @@ partialRender (Partial p) = partialRender_ p
 partialList :: IO [String]
 partialList = do
      cwd <- getCurrentDirectory
-     partialsDir <- lookup "PARTIALSDIR" `liftM` getEnvironment
-     fs1 <- case partialsDir of
-         Just dir -> findFiles' dir
-         Nothing  -> return []
-     fs2 <- findFiles' (joinPath [cwd, "src", "Partials"] )
-     return $ takeBaseName <$> (fs1 ++ fs2) where
-         findFiles' fp = do
-             fp_ex <- doesDirectoryExist fp
-             if fp_ex then find notHidden regularHsFile fp else return [] where
-                 regularHsFile = fileType ==? RegularFile &&? extension ==? ".hs"
-                 notHidden = (\n->head n /= '.') `liftM` fileName
+     fs <- fromRight <$> return [] <*> findHsFiles (joinPath [cwd, "src", "Partials"])
+     return $ takeBaseName <$> fs
 
-con name = AppE <$> [e| Partial |] <*> conE (mkName name)
+-- | Get the list of files in directory @fp@. When the directory doesn't exist return Left errormsg.
+findHsFiles :: FilePath -> IO (Either String [FilePath])
+findHsFiles fp = do
+    fp_ex <- doesDirectoryExist fp
+    if fp_ex
+    then Right <$> find notHidden regularHsFile fp
+    else return (Left $ "Directory " ++ fp ++ " does not exist!!") where
+        regularHsFile = fileType ==? RegularFile &&? extension ==? ".hs"
+        notHidden = (('.'/=).head) <$> fileName
 
 -- | Return a list of Partial.
 -- The return type is [Partial]
 getPartials :: Q Exp
-getPartials = ListE <$> (runIO partialList >>= mapM mkPartial)
+getPartials = SigE <$> psE <*> [t| [Partial] |] where
+    psE = ListE <$> (runIO partialList >>= mapM mkPartial)
 
+-- | Return an instance of Partial <name>
+-- The return type is Partial
 mkPartial :: String -> Q Exp
 mkPartial name = AppE <$> [e| Partial |] <*> conE (mkName name)
+
+-- @Todo: qAddDependentFile

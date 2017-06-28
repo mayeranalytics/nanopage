@@ -41,6 +41,7 @@ executable mkPartialsHs
                      , iso8601-time
                      , string-qq
                      , blaze-markup
+                     , extra
     other-modules:     Nanopage
                      , Internal.FileDB
                      , Internal.Helpers
@@ -90,6 +91,7 @@ library
                      , open-browser
                      , template-haskell >= 2.7
                      , tostring
+                     , extra
     exposed-modules:   Nanopage
                      , Config
                      , CliOpts
