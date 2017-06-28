@@ -1,8 +1,8 @@
 {-# LANGUAGE ExistentialQuantification #-}
 {-# LANGUAGE TemplateHaskell           #-}
 module Internal.Partial (
-    Partial_, Partial(..),
-    extraRoutes, extraRoutes', partial, partialName, partialName',
+    Partial_(..), Partial(..),
+    partialRoutes, partialRender, partialName,
     getPartials
 ) where
 
@@ -24,21 +24,25 @@ type RouteType = [Sp.SpockM FileDB () () ()]
 class Partial_ a where
 
     -- | A list of extra routes that should be added
-    extraRoutes :: a -> [Sp.SpockM FileDB () () ()]
+    partialRoutes_ :: a -> [Sp.SpockM FileDB () () ()]
 
     -- | The definition of the partial
-    partial     :: a -> FileDB -> Page -> Params -> H.Html
+    partialRender_ :: a -> FileDB -> Page -> Params -> H.Html
 
     -- | The name of the partial, i.e. also the string that identifies the
     -- partial in mustache patterns {{}}, {{{}}}
-    partialName :: a -> T.Text
+    partialName_ :: a -> T.Text
 
 data Partial = forall a. Partial_ a => Partial a
 
---extraRoutes' :: Partial a -> [Sp.SpockM FileDB () () ()]
-extraRoutes' (Partial p) = extraRoutes p
+partialRoutes :: Partial -> [Sp.SpockM FileDB () () ()]
+partialRoutes (Partial p) = partialRoutes_ p
 
-partialName' (Partial p) = partialName p
+partialName :: Partial -> T.Text
+partialName (Partial p) = partialName_ p
+
+partialRender :: Partial -> FileDB -> Page -> Params -> H.Html
+partialRender (Partial p) = partialRender_ p
 
 -- | Return a list of .hs files in ./Partials and ./src/Partials.
 -- Missing directories are silently ignored.
@@ -66,27 +70,3 @@ getPartials = ListE <$> (runIO partialList >>= mapM mkPartial)
 
 mkPartial :: String -> Q Exp
 mkPartial name = AppE <$> [e| Partial |] <*> conE (mkName name)
-
-{-
--- | Get the list of partials as returned by partialList. The result is a TH expression of type @[String]@.
-getNamesOfPartials :: Q Exp
-getNamesOfPartials = fmap (ListE . map (LitE . StringL)) fs
-    where fs = runIO partialList
-
--- | The result is a TH expression of type @RouteType@.
-getRouteOfPartial :: String -> Q Exp
-getRouteOfPartial name = AppE <$> [e| extraRoutes |] <*> conE (mkName name)
-
--- | The result is a TH expression of type @[RouteType]@.
-getRoutesOfPartials :: Q Exp
-getRoutesOfPartials = AppE <$> [e| concat |] <*> rss where
-    rss = ListE <$> (runIO partialList >>= mapM getRouteOfPartial)
-
--- | Return a list of Partial.partial.
--- The result is a TH expression of type @[a -> FileDB -> Page -> Params -> H.Html]@.
-getPartials :: Q Exp
-getPartials = ListE <$> (runIO partialList >>= mapM getTuple) where
-    getTuple name = tupE [getPartialName name, getPartial name]
-    getPartial name = AppE <$> [e| partial |] <*> conE (mkName name)
-    getPartialName name = AppE <$> [e| partialName |] <*> conE (mkName name)
--}

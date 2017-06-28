@@ -13,9 +13,9 @@ import qualified Text.Blaze.Html5.Attributes as A
 data KeywordList = KeywordList
 
 instance Partial_ KeywordList where
-    extraRoutes _ = []
-    partial       = _partial
-    partialName _ = "keywordlist"
+    partialRoutes_ _ = []
+    partialRender_   = _partial
+    partialName_ _   = "keywordlist"
 
 _partial :: KeywordList -> FileDB -> Page -> Params -> H.Html
 _partial _ _ p _ = H.div ! A.class_ (fromString "keywordlist") $

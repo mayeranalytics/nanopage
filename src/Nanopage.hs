@@ -2,7 +2,7 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module Nanopage (
     -- Internal.Partial
-    Partial, extraRoutes, partial, partialName, getPartials,
+    Partial(..), partialRoutes, partialRender, partialName, getPartials,
     -- Page
     renderPage, renderPreview, routePage, routePreview,
     -- FileDB
@@ -49,8 +49,8 @@ import           Page                                 (renderPage,
 import           Partials
 import           Sitemap
 
-runNanopage :: NanopageConfig -> IO ()
-runNanopage opts = do
+runNanopage :: NanopageConfig -> [Partial] -> IO ()
+runNanopage opts partials = do
     putStrLn (toString opts)
     setCurrentDirectory (contentDir opts)
     if contentDir opts /= "."
@@ -60,7 +60,7 @@ runNanopage opts = do
     when (mode opts == ADMIN) $ do
         success <- openBrowser $ "http://localhost:" ++ show (portNumber opts)
         unless success (putStrLn "Failed to open browser.")
-    Sp.runSpock (portNumber opts) (Sp.spock config $ appMiddleware opts >> app opts)
+    Sp.runSpock (portNumber opts) (Sp.spock config $ appMiddleware opts >> (app opts partials))
 
 -- | Todo: Make a nice error page.
 errHandler :: Status -> Sp.ActionCtxT () IO ()
@@ -100,8 +100,8 @@ spockConfig opts = do
        Sp.spc_csrfPostName = ""
    }
 
-app :: NanopageConfig -> Sp.SpockM FileDB () () ()
-app opts = do
+app :: NanopageConfig -> [Partial] -> Sp.SpockM FileDB () () ()
+app opts partials = do
    pages <- Sp.runQuery makePages
    let pages' | mode opts == ADMIN = pages
               | otherwise = filter (not.isHiddenPage) pages
@@ -110,9 +110,9 @@ app opts = do
    -- now add all the routes
    sitemap <- liftIO $ mkSitemap (serverName opts) (map (TL.unpack . slug) pages')
    Sp.get "sitemap.xml" $ (Sp.xml . T.encodeUtf8 . TL.toStrict) sitemap
-   forM_ pages' routePage
+   forM_ pages' (routePage partials)
    forM_ pages' routePreview
-   sequence_ $ concat $ map extraRoutes' $(getPartials)
+   sequence_ $ concat $ map partialRoutes $(getPartials)
    unless (isAdmin opts) $ do
        staticDirRoutes <- Sp.runQuery getStaticDirRoutes
        liftIO $ putStrLn "Files:"

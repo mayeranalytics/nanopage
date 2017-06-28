@@ -14,9 +14,9 @@ import           Internal.Partial
 data CategoryList = CategoryList
 
 instance Partial_ CategoryList where
-    extraRoutes _ = []
-    partial       = _partial
-    partialName _ = "categorylist"
+    partialRoutes_ _ = []
+    partialRender_   = _partial
+    partialName_ _   = "categorylist"
 
 _partial :: CategoryList -> FileDB -> Page -> Params -> H.Html
 _partial _ _ p _ = H.div ! A.class_ (fromString "categorylist") $

@@ -57,12 +57,12 @@ allPartials :: [Partial]
 allPartials = $(getPartials)
 
 -- |Turn a page created by makePage into content.
-makeContent :: Page -> Params -> FileDB -> IO TL.Text
-makeContent page params db = do
+makeContent :: Page -> Params -> [Partial]-> FileDB -> IO TL.Text
+makeContent page params partials db = do
     let t = fromMaybe (error "INTERNAL ERROR") (template page)
     -- 5. instantiate the partials
     let partialInstances = map f allPartials where
-        f (Partial p) = renderHtml $ (partial p) db page params
+        f p = renderHtml $ (partialRender p) db page params
     -- 6. Treat the htmlContent as a template and let  Mustache render it with
     --    the standard pairs
     let cfg = config page
@@ -72,9 +72,9 @@ makeContent page params db = do
             "description" .= descriptionString cfg,
             "author"      .= authorString cfg
             ] :: [Y.Pair]
-    let partials_pairs = map mkPair $ filter filtF allPartials where
-        mkPair (Partial p) = (TL.toStrict $ renderHtml $ (partial p) db page params) .= (partialName p)
-        filtF (Partial p) = FileDB.mode db == FileDB.ADMIN || (partialName p) /= "adminblock"
+    let partials_pairs = map mkPair $ partials ++ (filter filtF allPartials) where
+        mkPair p = (TL.toStrict $ renderHtml $ (partialRender p) db page params) .= (partialName p)
+        filtF p = FileDB.mode db == FileDB.ADMIN || (partialName p) /= "adminblock"
     let other_pairs = config_pairs ++ partials_pairs
     let htmlContentsRendered = other_pairs `renderWithTemplate` mdContent page
     -- 7. Now render the template, using all pairs. In particular, plug in the

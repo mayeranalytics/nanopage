@@ -8,7 +8,7 @@ import           Data.Monoid      ((<>))
 import           Data.Text        (Text, intercalate, pack)
 import           Data.Text.IO     (putStrLn)
 import           Internal.Helpers (getISOTime)
-import           Internal.Partial (getPartials, partialName')
+import           Internal.Partial (getPartials, partialName)
 import           Partials
 import           Prelude          hiding (intercalate, putStrLn)
 
@@ -16,7 +16,7 @@ import           Prelude          hiding (intercalate, putStrLn)
 -- in the src directory.
 
 partialNames :: [Text]
-partialNames = map (\p->"Partials." <> partialName' p) $(getPartials)
+partialNames = map (\p->"Partials." <> partialName p) $(getPartials)
 
 main :: IO ()
 main = do

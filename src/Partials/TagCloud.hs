@@ -29,9 +29,9 @@ import           Internal.Partial
 data TagCloud = TagCloud
 
 instance Partial_ TagCloud where
-    extraRoutes _ = [route]
-    partial       = _partial
-    partialName _ = "tagcloud"
+    partialRoutes_ _ = [route]
+    partialRender_   = _partial
+    partialName_ _   = "tagcloud"
 
 route :: Sp.SpockM FileDB () () ()
 route = Sp.get "pages" $ do

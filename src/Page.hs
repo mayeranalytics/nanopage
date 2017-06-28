@@ -9,6 +9,7 @@ import qualified Web.Spock              as Sp
 import           FileDB                 (FileDB, Page, PageInfo, makeContent,
                                          makePreview, mkPageInfo, slug)
 import           Internal.HtmlOps
+import           Internal.Partial
 
 import           Debug.Trace            (trace)
 pPage :: FileDB.Page -> FileDB.Page
@@ -17,15 +18,15 @@ pPage p = trace (show $ FileDB.slug p) p
 pageHandler :: MonadIO m => TL.Text -> Sp.ActionT m ()
 pageHandler = Sp.html . TL.toStrict
 
-renderPage :: FileDB.Page -> Sp.ActionCtxT () (Sp.WebStateM FileDB.FileDB () ()) ()
-renderPage p = do
+renderPage :: [Partial] -> FileDB.Page -> Sp.ActionCtxT () (Sp.WebStateM FileDB.FileDB () ()) ()
+renderPage partials p = do
     params <- Sp.params
-    content <- Sp.runQuery (makeContent p params)
+    content <- Sp.runQuery (makeContent p params partials)
     Sp.html $ TL.toStrict content
 
-routePage :: FileDB.Page -> Sp.SpockM FileDB.FileDB () () ()
-routePage p = Sp.get route action where
-    action = renderPage p
+routePage :: [Partial] -> FileDB.Page -> Sp.SpockM FileDB.FileDB () () ()
+routePage partials p = Sp.get route action where
+    action = renderPage partials p
     route | slug == "/" = Sp.root
           | otherwise   = Sp.static $ TL.unpack slug
           where slug = FileDB.slug p

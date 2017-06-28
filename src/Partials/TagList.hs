@@ -14,9 +14,9 @@ import           Internal.Partial
 data TagList = TagList
 
 instance Partial_ TagList where
-    extraRoutes _ = []
-    partial       = _partial
-    partialName _ = "taglist"
+    partialRoutes_ _ = []
+    partialRender_   = _partial
+    partialName_ _   = "taglist"
 
 _partial :: TagList -> FileDB -> Page -> Params -> H.Html
 _partial _ _ p _ = H.div ! A.class_ (fromString "taglist") $

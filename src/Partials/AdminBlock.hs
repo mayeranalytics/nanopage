@@ -25,9 +25,9 @@ import           Internal.Partial
 data AdminBlock = AdminBlock
 
 instance Partial_ AdminBlock where
-    extraRoutes _ = [route]
-    partial       = _partial
-    partialName _ = "adminblock"
+    partialRoutes_ _ = [route]
+    partialRender_   = _partial
+    partialName_ _   = "adminblock"
 
 route :: Sp.SpockM FileDB () () ()
 route = Sp.get "admin/getpages" $ do
