@@ -66,7 +66,7 @@ data Mode = PROD | ADMIN deriving (Read, Show, Eq)
 -- (whereas embedAllFiles doesn't really have to be).
 defaultFileDB :: Mode -> IO FileDB
 defaultFileDB m = do
-    allFiles <- if (m == ADMIN) then readAllFiles else embedAllFiles
+    allFiles <- if m == ADMIN then readAllFiles else embedAllFiles
     return FileDB {
         pagesDir = "pages",
         templatesDir = "templates",
@@ -85,7 +85,7 @@ readAllFiles = do
         fileList :: FilePath -> IO [FilePath]
         fileList = Find.find notHidden regularFile where
             regularFile = Find.fileType ==? Find.RegularFile
-            notHidden = (\n->(head n)/='.') `liftM` Find.fileName
+            notHidden = (('.'/=).head) `liftM` Find.fileName
 
 -- | Embed all required files. Note that the paths are hardcoded relative paths
 -- which has strong implications on project file structure.
@@ -246,9 +246,7 @@ title p = _title (config p)
 slug :: Page -> TL.Text
 slug p = case _slug (config p) of
     Just s  -> s
-    Nothing -> case makeSlug (title p) of
-        Just s' -> s'
-        Nothing -> error "Cannot create slug!"
+    Nothing -> fromMaybe (error "Cannot create slug!") (makeSlug (title p))
 
 -- | Return the list of keywords of a page.
 keywords :: Page -> [TL.Text]
@@ -370,7 +368,7 @@ makeAllPages db = mapM (`makePage` db) (listPages db)
 -- leading '.' or '_' are shown (ADMIN mode) or not (otherwise)
 makePages :: FileDB -> IO [Page]
 makePages db = filter f <$> makeAllPages db where
-   f p = (not . isHiddenPage) p || (mode db == ADMIN) where
+   f p = (not . isHiddenPage) p || (mode db == ADMIN)
 
 -- | Generate a list of routes for all files in FileDB @db@.
 getStaticDirRoutes :: FileDB -> IO [Sp.SpockM FileDB () () ()]
