@@ -18,7 +18,7 @@ import           System.FilePath.Posix      (joinPath)
 
 -- | Look up a compile-time environment variable.
 lookupCompileEnv :: String -> Q (Maybe String)
-lookupCompileEnv key = lookup key `liftM` runIO getEnvironment
+lookupCompileEnv key = lookup key <$> runIO getEnvironment
 
 -- | Look up an compile-time environment variable and fail if it's not present.
 getCompileEnv :: String -> Q String

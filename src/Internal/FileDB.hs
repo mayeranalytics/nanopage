@@ -4,7 +4,7 @@
 {-# LANGUAGE TemplateHaskell   #-}
 module Internal.FileDB where
 
-import           Control.Monad                 (filterM, liftM, when)
+import           Control.Monad                 (filterM, when)
 import           Control.Monad.IO.Class        (MonadIO, liftIO)
 import           Data.Aeson                    (FromJSON, ToJSON, fromJSON,
                                                 toJSON)
@@ -85,7 +85,7 @@ readAllFiles = do
         fileList :: FilePath -> IO [FilePath]
         fileList = Find.find notHidden regularFile where
             regularFile = Find.fileType ==? Find.RegularFile
-            notHidden = (('.'/=).head) `liftM` Find.fileName
+            notHidden = (('.'/=).head) <$> Find.fileName
 
 -- | Embed all required files. Note that the paths are hardcoded relative paths
 -- which has strong implications on project file structure.
